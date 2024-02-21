@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: svp-jel-proxy
+  name: svp-jel-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: svp-jel-proxy
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: svp-jel-proxy
+    spec:
+      containers:
+        - image: crisalidesr/svp-jel-proxy:latest
+          livenessProbe:
+            httpGet:
+              port: 3030
+              path: /jel/sparql
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              port: 3030
+              path: /jel/sparql
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          name: svp-jel-proxy
+          ports:
+            - containerPort: 3030
+          resources: { }
+      restartPolicy: Always
