@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: svp-jel-proxy
+  name: svp-jel-proxy
+spec:
+  ports:
+    - name: "sparql-web-port"
+      port: 3030
+      targetPort: 3030
+  selector:
+    app: svp-jel-proxy
