@@ -21,13 +21,13 @@ spec:
           livenessProbe:
             httpGet:
               port: 3030
-              path: /jel/sparql
+              path: /jel/sparql?query=SELECT%20(%22Endpoint%20is%20live%20and%20responsive%22%20AS%20%3Fstatus)%20WHERE%20%7B%7D%20LIMIT%201
             initialDelaySeconds: 30
             periodSeconds: 10
           readinessProbe:
             httpGet:
               port: 3030
-              path: /jel/sparql
+              path: /jel/sparql?query=SELECT%20(%22Endpoint%20is%20live%20and%20responsive%22%20AS%20%3Fstatus)%20WHERE%20%7B%7D%20LIMIT%201
             initialDelaySeconds: 5
             periodSeconds: 5
           name: svp-jel-proxy
