@@ -8,7 +8,7 @@ data:
   AMQP_ENABLED: 'true'
   AMQP_HOST: 'svp-rabbit'
   AMQP_PORT: '5672'
-  API_HOST: 'http://34.163.249.19'
+  API_HOST: 'http://34.155.103.10'
   API_PREFIX: '/api'
   API_VERSION: 'v1'
   APP_ENV: 'DEV'
