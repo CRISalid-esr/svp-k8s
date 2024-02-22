@@ -15,4 +15,6 @@ data:
   DB_HOST: '127.0.0.1'
   DB_PORT: '5432'
   SVP_JEL_PROXY_URL: "http://svp-jel-proxy:3030/jel/sparql"
+  LOGGING_LEVEL: 'WARNING'
+  LOGURU_LEVEL: 'WARNING'
 
