@@ -23,7 +23,7 @@ spec:
                 - name: RESEARCH_IDS_FILE
                   value: "/data/researcher_ids.csv"
                 - name: HARVESTERS
-                  value: "scanr,hal,openalex"
+                  value: "scanr,hal,openalex,idref"
                 - name: AMQP_PASSWORD
                   valueFrom:
                     secretKeyRef:
