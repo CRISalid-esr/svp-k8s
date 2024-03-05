@@ -17,7 +17,7 @@ spec:
           serviceAccountName: svp-ksa-cloud-storage
           containers:
             - name: svp-client-mock
-              image: crisalidesr/svp-client-mock:v0.5-dev
+              image: crisalidesr/svp-client-mock:v0.6-dev
               imagePullPolicy: Always
               env:
                 - name: RESEARCH_IDS_FILE
