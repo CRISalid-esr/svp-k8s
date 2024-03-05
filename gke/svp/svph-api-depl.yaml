@@ -66,7 +66,7 @@ spec:
           envFrom:
             - configMapRef:
                 name: svph-api-config
-          image: crisalidesr/svp-harvester:v0.5-dev
+          image: crisalidesr/svp-harvester:v0.6-dev
           imagePullPolicy: Always
           ports:
             - containerPort: 8000
