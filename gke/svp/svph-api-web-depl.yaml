@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: svph-api-web
+  name: svph-api-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: svph-api-web
+  strategy: { }
+  template:
+    metadata:
+      labels:
+        app: svph-api-web
+    spec:
+      serviceAccountName: svp-ksa-cloud-sql
+      containers:
+        - name: svph-api-web
+          args:
+            - bash
+            - -c
+            - while ! nc -z 127.0.0.1 5432; do echo "waiting for database" && sleep 1; done; alembic upgrade heads && uvicorn app.main:app --host 0.0.0.0 --port 8000
+          env:
+            - name: SCANR_ES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: svph-api-secret
+                  key: scanr_es_password
+            - name: SCANR_ES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: svph-api-secret
+                  key: scanr_es_user
+            - name: SCANR_ES_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: svph-api-secret
+                  key: scanr_es_host
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: svph-db-secret
+                  key: db_password
+            - name: DB_IAM_USER
+              valueFrom:
+                secretKeyRef:
+                  name: svph-db-secret
+                  key: db_user
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: svph-db-secret
+                  key: db_name
+          envFrom:
+            - configMapRef:
+                name: svph-api-web-config
+          image: crisalidesr/svp-harvester:v0.8-dev
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 60
+            periodSeconds: 30
+          resources:
+            limits:
+              cpu: 5000m
+              memory: 10Gi
+            requests:
+              cpu: 2000m
+              memory: 7Gi
+        - name: cloud-sql-proxy
+          image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:latest
+          args:
+            - "--private-ip"
+            - "--auto-iam-authn"
+            - "--port=5432"
+            - "fake-cgp-vanilla-project:europe-west9:svp-test-postgres"
+          resources:
+            limits:
+              cpu: 200m
+              memory: 300Mi
+            requests:
+              cpu: 100m
+              memory: 200Mi
+          securityContext:
+            runAsNonRoot: true
+
+      restartPolicy: Always

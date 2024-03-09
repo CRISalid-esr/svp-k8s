@@ -2,22 +2,22 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: svph-api
-  name: svph-api
+    app: svph-api-worker
+  name: svph-api-worker
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: svph-api
+      app: svph-api-worker
   strategy: { }
   template:
     metadata:
       labels:
-        app: svph-api
+        app: svph-api-worker
     spec:
       serviceAccountName: svp-ksa-cloud-sql
       containers:
-        - name: svph-web
+        - name: svph-api-worker
           args:
             - bash
             - -c
@@ -65,7 +65,7 @@ spec:
                   key: db_name
           envFrom:
             - configMapRef:
-                name: svph-api-config
+                name: svph-api-web-config
           image: crisalidesr/svp-harvester:v0.8-dev
           imagePullPolicy: Always
           ports:
