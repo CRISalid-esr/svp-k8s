@@ -65,7 +65,7 @@ spec:
                   key: db_name
           envFrom:
             - configMapRef:
-                name: svph-api-web-config
+                name: svph-api-worker-config
           image: crisalidesr/svp-harvester:v0.9-dev
           imagePullPolicy: Always
           ports:
