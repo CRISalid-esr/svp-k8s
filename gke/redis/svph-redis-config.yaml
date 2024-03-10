@@ -20,9 +20,7 @@ metadata:
   name: redis-cluster
 data:
   redis.conf:  |+
-    cluster-enabled yes
-    cluster-node-timeout 15000
-    cluster-config-file /data/nodes.conf
+    cluster-enabled no
     appendonly yes
     protected-mode no
     dir /data
