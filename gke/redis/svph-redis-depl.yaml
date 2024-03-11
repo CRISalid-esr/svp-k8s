@@ -40,33 +40,32 @@ spec:
           - "no"
         resources:
           requests:
-            cpu: "100m"
-            memory: "100Mi"
+            cpu: "500m"
+            memory: "5Gi"
         ports:
             - name: redis
               containerPort: 6379
               protocol: "TCP"
         # [START gke_manifests_redis_cluster_statefulset_redis_probes]
         startupProbe:
-          periodSeconds: 10
-          timeoutSeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 5
           successThreshold: 1
           failureThreshold: 20
           tcpSocket:
             port: redis
         livenessProbe:
-          initialDelaySeconds: 25
-          periodSeconds: 10
-          timeoutSeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 5
           successThreshold: 1
-          failureThreshold: 10
+          failureThreshold: 5
           exec:
             command: ["sh", "-c", "/probes/liveness.sh"]
         readinessProbe:
-          periodSeconds: 10
-          timeoutSeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 1
           successThreshold: 1
-          failureThreshold: 10
+          failureThreshold: 5
           exec:
             command: ["sh", "-c", "/probes/readiness.sh"]
         # [END gke_manifests_redis_cluster_statefulset_redis_probes]
