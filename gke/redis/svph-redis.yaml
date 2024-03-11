@@ -48,13 +48,14 @@ spec:
               protocol: "TCP"
         # [START gke_manifests_redis_cluster_statefulset_redis_probes]
         startupProbe:
-          periodSeconds: 5
-          timeoutSeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 10
           successThreshold: 1
           failureThreshold: 20
           tcpSocket:
             port: redis
         livenessProbe:
+          initialDelaySeconds: 25
           periodSeconds: 10
           timeoutSeconds: 10
           successThreshold: 1
