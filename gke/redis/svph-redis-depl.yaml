@@ -95,5 +95,5 @@ spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
-          storage: 10Gi
+          storage: 8Gi
 # [END gke_manifests_redis_cluster_statefulset_redis]
