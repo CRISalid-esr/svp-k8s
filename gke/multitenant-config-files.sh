@@ -34,7 +34,8 @@ for file in "$CONFIG_DIR"/*-config.yaml; do
 
   for var in API_HOST; do
     value=$(eval "echo \$$var")
-    sed -i -e "s/\${$var}/$value/g" "$INST_DIRECTORY/$(basename "$file")"
+    echo "Replacing $var with $value in $INST_DIRECTORY/$(basename "$file")"
+    sed -i -e "s#\${$var}#$value#g" "$INST_DIRECTORY/$(basename "$file")"
   done
 done
 
