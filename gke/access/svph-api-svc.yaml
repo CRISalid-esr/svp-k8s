@@ -4,7 +4,6 @@ metadata:
   labels:
     app: svph-api-web
   name: svph-api-svc
-  namespace: default
 spec:
   ports:
   - port: 80

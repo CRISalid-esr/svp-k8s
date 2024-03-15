@@ -15,7 +15,7 @@ spec:
       labels:
         app: svph-api-web
     spec:
-      serviceAccountName: svp-ksa-cloud-sql
+      serviceAccountName: svph-ksa
       containers:
         - name: svph-api-web
           args:
@@ -43,7 +43,7 @@ spec:
                 secretKeyRef:
                   name: svph-db-secret
                   key: db_password
-            - name: DB_IAM_USER
+            - name: DB_USER
               valueFrom:
                 secretKeyRef:
                   name: svph-db-secret
@@ -54,6 +54,8 @@ spec:
                   name: svph-db-secret
                   key: db_name
           envFrom:
+            - configMapRef:
+                name: svph-api-config
             - configMapRef:
                 name: svph-api-web-config
           image: crisalidesr/svp-harvester:v0.9-dev
@@ -85,7 +87,7 @@ spec:
             - "--private-ip"
             - "--auto-iam-authn"
             - "--port=5432"
-            - "fake-cgp-vanilla-project:europe-west9:svp-test-postgres"
+            - "${CONNECTION_NAME}"
           resources:
             limits:
               cpu: 200m
@@ -95,5 +97,4 @@ spec:
               memory: 200Mi
           securityContext:
             runAsNonRoot: true
-
       restartPolicy: Always
