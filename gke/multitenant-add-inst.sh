@@ -77,16 +77,3 @@ else
   echo "Service account svph-ksa already exists"
 fi
 
-SECRET_VERSION="0.1"
-
-for var in SCANR_ES_HOST SCANR_ES_USER SCANR_ES_PASSWORD; do
-  gcloud secrets add-iam-policy-binding $var \
-    --member=serviceAccount:$SERVICE_ACCOUNT_EMAIL \
-    --role=roles/secretmanager.secretAccessor
-done
-
-cp auth/svph-secrets.yaml $INST_DIRECTORY
-sed -i -e "s/\${PROJECT_ID}/$PROJECT_ID/g" $INST_DIRECTORY/svph-secrets.yaml
-sed -i -e "s/\${SECRET_VERSION}/$SECRET_VERSION/g" $INST_DIRECTORY/svph-secrets.yaml
-# apply it
-kubectl apply -f $INST_DIRECTORY/svph-secrets.yaml -n $INST
