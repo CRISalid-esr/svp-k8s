@@ -10,5 +10,6 @@ data:
   API_PREFIX: '/api'
   API_VERSION: 'v1'
   APP_ENV: 'DEV'
+  INSTITUTION_NAME: '${INSTITUTION_NAME}'
 
 

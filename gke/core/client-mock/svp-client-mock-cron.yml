@@ -14,16 +14,16 @@ spec:
             gke-gcsfuse/memory-limit: 0.1Gi
             gke-gcsfuse/ephemeral-storage-limit: 0.1Gi
         spec:
-          serviceAccountName: svp-ksa-cloud-storage
+          serviceAccountName: svph-ksa
           containers:
             - name: svp-client-mock
-              image: crisalidesr/svp-client-mock:v0.6-dev
+              image: crisalidesr/svp-client-mock:v0.9-dev
               imagePullPolicy: Always
               env:
                 - name: RESEARCH_IDS_FILE
                   value: "/data/researcher_ids.csv"
                 - name: HARVESTERS
-                  value: "scanr,hal,openalex,idref"
+                  value: "${HARVESTERS}"
                 - name: AMQP_PASSWORD
                   valueFrom:
                     secretKeyRef:
@@ -37,6 +37,8 @@ spec:
               envFrom:
                 - configMapRef:
                     name: svph-api-config
+                - configMapRef:
+                    name: svph-api-worker-config
               command:
                 - /bin/sh
                 - -c
@@ -52,5 +54,5 @@ spec:
                 driver: gcsfuse.csi.storage.gke.io
                 readOnly: true
                 volumeAttributes:
-                  bucketName: depl-bucket
+                  bucketName: crisalid-${INST}-bucket
                   mountOptions: "implicit-dirs"

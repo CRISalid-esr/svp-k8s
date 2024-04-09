@@ -37,8 +37,7 @@ if [ -d $INST_DIRECTORY ]; then
     echo "Wiping instance directory $INST_DIRECTORY"
     rm -rf $INST_DIRECTORY
   else
-    echo "Exiting"
-    exit 1
+    echo "Instance directory $INST_DIRECTORY already exists and will not be wiped."
   fi
 fi
 
@@ -94,6 +93,8 @@ gsutil ls -p $PROJECT_ID | grep -q gs://crisalid-$INST-bucket
 if [ $? -ne 0 ]; then
   echo "Creating bucket crisalid-$INST-bucket"
   gsutil mb -p $PROJECT_ID -c regional -l $LOCATION gs://crisalid-$INST-bucket
+  # allow svph service account to read data from the bucket
+  gsutil iam ch serviceAccount:$GSA_EMAIL:objectViewer gs://crisalid-$INST-bucket
 else
   echo "Bucket crisalid-$INST-bucket already exists"
 fi
@@ -123,8 +124,18 @@ CONNECTION_NAME=$(gcloud sql instances describe $DB_INSTANCE_NAME --format="valu
 for file in core/svph/*-depl.yaml; do
   echo "Copying $file to $INST_DIRECTORY"
   cp "$file" "$INST_DIRECTORY"
-  for var in CONNECTION_NAME LOCATION; do
+  for var in CONNECTION_NAME LOCATION SCOPUS_INST_TOKEN SCOPUS_API_KEY; do
     value=$(eval "echo \$$var")
     sed -i -e "s/\${$var}/$value/g" "$INST_DIRECTORY/$(basename "$file")"
   done
+done
+
+# copy svp-client-mock cron file (svp-client-mock-cron.yml) from core/client-mock to inst/$INST
+# and replace ${INST} with $INST
+file=core/client-mock/svp-client-mock-cron.yml
+echo "Copying $file to $INST_DIRECTORY"
+cp "$file" "$INST_DIRECTORY"
+for var in INST HARVESTERS; do
+  value=$(eval "echo \$$var")
+  sed -i -e "s/\${$var}/$value/g" "$INST_DIRECTORY/$(basename "$file")"
 done

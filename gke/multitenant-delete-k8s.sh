@@ -21,7 +21,6 @@ folders=(
   "$RABBIT_DIRECTORY"
   "$REDIS_DIRECTORY"
   "$VOC_PROXIES_DIRECTORY"
-  "$CLIENT_MOCK_DIRECTORY"
 )
 
 for folder in "${folders[@]}"; do

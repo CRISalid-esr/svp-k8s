@@ -63,12 +63,22 @@ spec:
                 secretKeyRef:
                   name: svph-db-secret
                   key: db_name
+            - name: SCOPUS_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: svph-api-secret
+                  key: scopus_api_key
+            - name: SCOPUS_INST_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: svph-api-secret
+                  key: scopus_inst_token
           envFrom:
             - configMapRef:
                 name: svph-api-config
             - configMapRef:
-                name: svph-api-web-config
-          image: crisalidesr/svp-harvester:v0.9-dev
+                name: svph-api-worker-config
+          image: ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}
           imagePullPolicy: Always
           ports:
             - containerPort: 8000
@@ -97,7 +107,7 @@ spec:
             - "--private-ip"
             - "--auto-iam-authn"
             - "--port=5432"
-            - "fake-cgp-vanilla-project:europe-west9:svp-test-postgres"
+            - "${CONNECTION_NAME}"
           resources:
             limits:
               cpu: 200m
@@ -107,5 +117,4 @@ spec:
               memory: 200Mi
           securityContext:
             runAsNonRoot: true
-
       restartPolicy: Always

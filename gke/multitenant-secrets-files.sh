@@ -35,7 +35,7 @@ for file in "$SECRETS_DIR"/*-secret.yaml; do
   echo "Copying $file to $INST_DIRECTORY"
   cp "$file" "$INST_DIRECTORY"
 
-  for var in SCANR_ES_HOST SCANR_ES_USER SCANR_ES_PASSWORD AMQP_USER AMQP_PASSWORD DB_NAME DB_USER DB_PASSWORD; do
+  for var in SCANR_ES_HOST SCANR_ES_USER SCANR_ES_PASSWORD AMQP_USER AMQP_PASSWORD DB_NAME DB_USER DB_PASSWORD SCOPUS_INST_TOKEN SCOPUS_API_KEY; do
     value=$(eval "echo \$$var")
     encoded_value=$(base64_encode "$value")
     sed -i -e "s/\${$var}/$encoded_value/g" "$INST_DIRECTORY/$(basename "$file")"
