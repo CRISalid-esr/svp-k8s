@@ -45,6 +45,7 @@ for folder in "${folders[@]}"; do
   find "$folder" -name '*.yaml' -o -name '*.yml' | while read file; do
     # Use envsubst to replace the placeholder with the actual digest
     # and pipe it to kubectl apply
+    echo "Applying $file"
     envsubst <"$file" | kubectl apply --namespace="$INST" -f -
   done
 done
