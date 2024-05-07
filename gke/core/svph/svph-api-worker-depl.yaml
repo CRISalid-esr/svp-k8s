@@ -78,7 +78,7 @@ spec:
                 name: svph-api-config
             - configMapRef:
                 name: svph-api-worker-config
-          image: ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}
+          image: ${SVPH_DOCKER_IMAGE_NAME}:${SVPH_DOCKER_IMAGE_TAG}
           imagePullPolicy: Always
           ports:
             - containerPort: 8000
