@@ -17,15 +17,22 @@ CLIENT_MOCK_DIRECTORY=$CORE_DIRECTORY/client-mock
 
 SVPH_DOCKER_IMAGE_TAG="v0.11-dev"
 SVPH_DOCKER_IMAGE_NAME="crisalidesr/svp-harvester"
-docker pull $SVPH_DOCKER_IMAGE_NAME:$SVPH_DOCKER_IMAGE_TAG
-SVPH_DOCKER_IMAGE_DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' $SVPH_DOCKER_IMAGE_NAME:$SVPH_DOCKER_IMAGE_TAG)
+
+REGISTRY="index.docker.io"
+REPOSITORY_NAME="crisalidesr/svp-harvester"
+
+TOKEN=$(curl -s "https://auth.docker.io/token?service=registry.docker.io&scope=repository:$REPOSITORY_NAME:pull" | jq -r .token)
+
+# Get the image digest using Docker Registry HTTP API v2
+MANIFESTS=$(curl -s -H "Authorization: Bearer $TOKEN" "https://${REGISTRY}/v2/$REPOSITORY_NAME/manifests/$SVPH_DOCKER_IMAGE_TAG")
+SVPH_DOCKER_IMAGE_DIGEST=$(curl -sI -H "Authorization: Bearer $TOKEN" "https://${REGISTRY}/v2/$REPOSITORY_NAME/manifests/$SVPH_DOCKER_IMAGE_TAG" | awk '/docker-content-digest/ {print $2}' | tr -d '\r')
 
 echo "Docker image name: $SVPH_DOCKER_IMAGE_NAME"
 echo "Docker image tag: $SVPH_DOCKER_IMAGE_TAG"
 echo "Docker image digest: $SVPH_DOCKER_IMAGE_DIGEST"
 
 if [ -z "$SVPH_DOCKER_IMAGE_DIGEST" ]; then
-  echo "Failed to retrieve Docker image digest for $IMAGE_NAME"
+  echo "Failed to retrieve Docker image digest for $SVPH_DOCKER_IMAGE_NAME"
   exit 1
 fi
 
