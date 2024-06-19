@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: svph-api-worker-config
+  labels:
+    app: svph-api-worker
+data:
+  AMQP_ENABLED: 'true'
+  AMQP_HOST: 'svp-rabbit'
+  AMQP_PORT: '5672'
+  APP_ENV: 'DEV'
+  AMQP_PREFETCH_COUNT: '5'
+  AMQP_TASK_PARALLELISM_LIMIT: '5'
+
+

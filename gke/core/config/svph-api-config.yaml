@@ -5,20 +5,15 @@ metadata:
   labels:
     app: svph-api
 data:
-  AMQP_ENABLED: 'true'
-  AMQP_HOST: 'svp-rabbit'
-  AMQP_PORT: '5672'
-  API_HOST: 'http://34.155.103.10'
+  LOGGING_LEVEL: '30'
+  LOGURU_LEVEL: 'WARNING'
   API_PREFIX: '/api'
   API_VERSION: 'v1'
   APP_ENV: 'DEV'
   DB_HOST: '127.0.0.1'
   DB_PORT: '5432'
   SVP_JEL_PROXY_URL: 'http://svp-jel-proxy:3030/jel/sparql'
-  LOGGING_LEVEL: '30'
-  LOGURU_LEVEL: 'WARNING'
-  AMQP_PREFETCH_COUNT: '5'
-  AMQP_TASK_PARALLELISM_LIMIT: '5'
+  REDIS_URL: 'redis://svph-redis:6379'
   IDREF_SUDOC_TIMEOUT: '30'
   IDREF_CONCEPTS_TIMEOUT: '30'
   WIKIDATA_CONCEPTS_TIMEOUT: '10'
@@ -28,6 +23,5 @@ data:
   HAL_ORGANIZATIONS_TIMEOUT: '10'
   IDREF_ORGANIZATIONS_TIMEOUT: '10'
   ROR_ORGANIZATIONS_TIMEOUT: '10'
-  REDIS_URL: 'redis://svph-redis:6379'
 
 

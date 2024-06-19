@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: svph-api-web-config
+  labels:
+    app: svph-api-web
+data:
+  AMQP_ENABLED: 'false'
+  API_HOST: '${API_HOST}'
+  API_PREFIX: '/api'
+  API_VERSION: 'v1'
+  APP_ENV: 'DEV'
+  INSTITUTION_NAME: '${INSTITUTION_NAME}'
+
+
