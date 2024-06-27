@@ -1,1 +1,5 @@
-## SoVisu+ Kubernetes deployment documentation
+## SoVisu+ Kubernetes deployment documentation 
+
+# Minikube deployment
+
+# GKE deployment
