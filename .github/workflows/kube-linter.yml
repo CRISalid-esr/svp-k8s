@@ -14,9 +14,9 @@ jobs:
       - uses: actions/checkout@v4
 
       # This prepares directory where github/codeql-action/upload-sarif@v1 looks up report files by default.
-      - name: Create ../lint-result directory for SARIF report files
+      - name: Create ../results directory for SARIF report files
         shell: bash
-        run: mkdir -p ../lint-result
+        run: mkdir -p ../results
 
       - name: Scan yaml files with kube-linter
         uses: stackrox/kube-linter-action@v1.0.5
@@ -30,15 +30,13 @@ jobs:
           # The following two settings make kube-linter produce scan analysis in SARIF format which would then be
           # made available in GitHub UI via upload-sarif action below.
           format: sarif
-          output-file: ../lint-result/kube-linter.sarif
+          output-file: ../results/kube-linter.sarif
         # The following line prevents aborting the workflow immediately in case your files fail kube-linter checks.
         # This allows the following upload-sarif action to still upload the results to your GitHub repo.
         continue-on-error: true
 
       - name: Upload SARIF report files to GitHub
         uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: kube-linter.sarif
 
       # Ensure the workflow eventually fails if files did not pass kube-linter checks.
       - name: Verify kube-linter-action succeeded
