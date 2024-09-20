@@ -9,11 +9,14 @@ kubectl create namespace neo4j
 # Add the neo4j repository to helm
 helm repo add neo4j https://helm.neo4j.com/neo4j
 
+# Create and tune the neo4j-values.yaml file for your project
+
 # Deploy the neo4j chart
 helm install neo4j neo4j/neo4j --namespace neo4j -f neo4j-values.yaml
 
 # Check everything is created
-watch "kubectl get all,pvc -n neo4j -o wide"
+watch "kubectl get all,pvc,secrets -n neo4j -o wide"
+helm status neo4j --namespace neo4j
 
 # Uninstall neo4j
 helm uninstall neo4j -n neo4j --wait
