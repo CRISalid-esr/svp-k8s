@@ -1,1 +1,1 @@
-## SoVisu+ Kubernetes deployment documentation
+# SoVisu+ Kubernetes deployment documentation
