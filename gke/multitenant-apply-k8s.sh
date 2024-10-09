@@ -56,3 +56,6 @@ for folder in "${folders[@]}"; do
     envsubst <"$file" | kubectl apply --namespace="$INST" -f -
   done
 done
+
+echo "helm upgrade --install crisalid-directory-bridge apache-airflow/airflow -n $INST -f $INST_DIRECTORY/cdb-values.yaml"
+helm upgrade --install crisalid-directory-bridge apache-airflow/airflow -n "$INST" -f "$INST_DIRECTORY/cdb-values.yaml"
