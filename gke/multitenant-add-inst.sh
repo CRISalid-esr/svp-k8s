@@ -2,6 +2,7 @@
 INST=$1
 DB_INSTANCE_NAME=svph-db
 LOCATION=europe-west9
+DATA_BUCKET_NAME="crisalid-$INST-bucket"
 
 # get project id $PROJECT_ID
 PROJECT_ID=$(gcloud config get-value project)
@@ -74,29 +75,45 @@ if [ $? -ne 0 ]; then
     --role roles/iam.workloadIdentityUser \
     --member="serviceAccount:$PROJECT_ID.svc.id.goog[$INST/svph-ksa]" \
     $GSA_EMAIL
-  gcloud projects add-iam-policy-binding $PROJECT_ID \
-  --member="serviceAccount:$GSA_EMAIL" \
-  --role="roles/cloudsql.client"
-  gcloud projects add-iam-policy-binding $PROJECT_ID \
-  --member="serviceAccount:$GSA_EMAIL" \
-  --role="roles/logging.logWriter"
+
   kubectl annotate serviceaccount \
     svph-ksa \
     iam.gke.io/gcp-service-account=$GSA_EMAIL \
     -n $INST
 else
-  echo "Service account svph-ksa already exists"
+  echo "Service account svph-ksa already exists with email $GSA_EMAIL"
 fi
 
-# if crisalid-$INST-bucket does not exist, create it
-gsutil ls -p $PROJECT_ID | grep -q gs://crisalid-$INST-bucket
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+  --member="serviceAccount:$GSA_EMAIL" \
+  --role="roles/cloudsql.client" \
+  --role="roles/logging.logWriter" \
+  --role="roles/composer.admin" \
+  --role="roles/composer.worker" \
+  --role="roles/container.admin" \
+  --role="roles/container.clusterAdmin" \
+  --role="roles/container.nodeAdmin" \
+  --role="roles/cloudsql.admin" \
+  --role="roles/compute.admin" \
+  --role="roles/compute.networkAdmin" \
+  --role="roles/storage.admin" \
+  --role="roles/iam.serviceAccountAdmin" \
+  --role="roles/iam.serviceAccountUser" \
+  --role="roles/monitoring.viewer" \
+  --role="roles/monitoring.metricWriter" \
+  --role="roles/redis.viewer" \
+  --role="roles/redis.editor"
+
+
+# if $DATA_BUCKET_NAME does not exist, create it
+gsutil ls -p $PROJECT_ID | grep -q gs://$DATA_BUCKET_NAME
 if [ $? -ne 0 ]; then
-  echo "Creating bucket crisalid-$INST-bucket"
-  gsutil mb -p $PROJECT_ID -c regional -l $LOCATION gs://crisalid-$INST-bucket
+  echo "Creating bucket $DATA_BUCKET_NAME"
+  gsutil mb -p $PROJECT_ID -c regional -l $LOCATION gs://$DATA_BUCKET_NAME
   # allow svph service account to read data from the bucket
-  gsutil iam ch serviceAccount:$GSA_EMAIL:objectViewer gs://crisalid-$INST-bucket
+  gsutil iam ch serviceAccount:$GSA_EMAIL:objectViewer gs://$DATA_BUCKET_NAME
 else
-  echo "Bucket crisalid-$INST-bucket already exists"
+  echo "Bucket $DATA_BUCKET_NAME already exists"
 fi
 
 # if svph-$INST-db does not exist in $DB_INSTANCE_NAME cloud sql postgres instance, create it
