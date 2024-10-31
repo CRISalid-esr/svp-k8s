@@ -9,7 +9,7 @@ data:
   LOGURU_LEVEL: 'WARNING'
   API_PREFIX: '/api'
   API_VERSION: 'v1'
-  APP_ENV: 'DEV'
+  APP_ENV: ${APP_ENV}
   DB_HOST: '127.0.0.1'
   DB_PORT: '5432'
   SVP_JEL_PROXY_URL: 'http://svp-jel-proxy:3030/jel/sparql'

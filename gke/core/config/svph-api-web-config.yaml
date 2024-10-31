@@ -9,7 +9,7 @@ data:
   API_HOST: '${API_HOST}'
   API_PREFIX: '/api'
   API_VERSION: 'v1'
-  APP_ENV: 'DEV'
+  APP_ENV: '${APP_ENV}'
   INSTITUTION_NAME: '${INSTITUTION_NAME}'
 
 

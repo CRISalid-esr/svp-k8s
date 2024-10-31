@@ -2,19 +2,19 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: svp-rabbit
-  name: svp-rabbit
+    app: crisalid-bus
+  name: crisalid-bus
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: svp-rabbit
+      app: crisalid-bus
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: svp-rabbit
+        app: crisalid-bus
     spec:
       containers:
         - image: rabbitmq:3-management
@@ -27,32 +27,38 @@ spec:
             failureThreshold: 30
             periodSeconds: 1
             timeoutSeconds: 3
-          name: svp-rabbit
+          name: crisalid-bus
           env:
             - name: RABBITMQ_DEFAULT_PASS
               valueFrom:
                 secretKeyRef:
-                  name: svp-rabbit-secret
-                  key: amqppassword
+                  name: crisalid-bus-secret
+                  key: amqp_password
             - name: RABBITMQ_DEFAULT_USER
               valueFrom:
                 secretKeyRef:
-                  name: svp-rabbit-secret
-                  key: amqpuser
+                  name: crisalid-bus-secret
+                  key: amqp_user
           ports:
             - containerPort: 5672
             - containerPort: 15672
-          resources: { }
+          resources:
+            limits:
+              cpu: 2000m
+              memory: 1Gi
+            requests:
+              cpu: 1000m
+              memory: 512Mi
           volumeMounts:
             - mountPath: /var/lib/rabbitmq
-              name: svp-rabbit-data
+              name: crisalid-bus-data
             - mountPath: /var/log/rabbitmq
-              name: svp-rabbit-logs
+              name: crisalid-bus-logs
       restartPolicy: Always
       volumes:
-        - name: svp-rabbit-data
+        - name: crisalid-bus-data
           persistentVolumeClaim:
-            claimName: svp-rabbit-pvc-data
-        - name: svp-rabbit-logs
+            claimName: crisalid-bus-pvc-data
+        - name: crisalid-bus-logs
           persistentVolumeClaim:
-            claimName: svp-rabbit-pvc-logs
+            claimName: crisalid-bus-pvc-logs

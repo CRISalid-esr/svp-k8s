@@ -13,6 +13,7 @@ RABBIT_DIRECTORY=$CORE_DIRECTORY/rabbitmq
 REDIS_DIRECTORY=$CORE_DIRECTORY/redis
 VOC_PROXIES_DIRECTORY=$CORE_DIRECTORY/voc-proxies
 CLIENT_MOCK_DIRECTORY=$CORE_DIRECTORY/client-mock
+NEO4J_INSTANCE_NAME="neo4j-$INST"
 
 kubectl apply -f -n $INST
 
@@ -26,3 +27,5 @@ folders=(
 for folder in "${folders[@]}"; do
   kubectl delete -f "$folder" --recursive --namespace=$INST
 done
+
+helm delete $NEO4J_INSTANCE_NAME --namespace $INST

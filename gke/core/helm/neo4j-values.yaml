@@ -1,0 +1,22 @@
+neo4j:
+  name: "${NEO4J_INSTANCE_NAME}"
+  resources:
+    cpu: "8"
+    memory: "8Gi"
+
+  password: "${NEO4J_PASSWORD}"
+
+  # Uncomment to use enterprise edition
+  #edition: "enterprise"
+  edition: "eval"
+  #acceptLicenseAgreement: "yes"
+
+volumes:
+  data:
+    mode: "dynamic"
+    dynamic:
+      # In GKE;
+      # * premium-rwo provisions SSD disks (recommended)
+      # * standard-rwo provisions balanced SSD-backed disks
+      # * standard provisions HDD disks
+      storageClassName: premium-rwo

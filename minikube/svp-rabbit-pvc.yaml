@@ -2,9 +2,9 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: svp-rabbit-pvc-data
+  name: crisalid-bus-pvc-data
   labels:
-    app: svp-rabbit
+    app: crisalid-bus
 spec:
   accessModes:
     - ReadWriteOnce
@@ -15,9 +15,9 @@ spec:
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: svp-rabbit-pvc-logs
+  name: crisalid-bus-pvc-logs
   labels:
-    app: svp-rabbit
+    app: crisalid-bus
 spec:
   accessModes:
     - ReadWriteOnce

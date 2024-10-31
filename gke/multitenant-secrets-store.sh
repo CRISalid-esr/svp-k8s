@@ -6,7 +6,7 @@ PROJECT_ID=$(gcloud config get-value project)
 PWD=$(pwd)
 INST_DIRECTORY=$PWD/inst/$INST
 
-SERVICE_ACCOUNT_EMAIL=$(gcloud iam service-accounts list --filter="name:$INST-svph" --format="value(email)")
+SERVICE_ACCOUNT_EMAIL=$(gcloud iam service-accounts list --filter="name:$INST-service-account" --format="value(email)")
 echo "Service account email: $SERVICE_ACCOUNT_EMAIL"
 
 SECRET_VERSION="0.1"
