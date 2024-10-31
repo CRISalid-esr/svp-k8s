@@ -6,7 +6,7 @@ metadata:
     app: svph-api
 data:
   AMQP_ENABLED: 'true'
-  AMQP_HOST: 'svp-rabbit'
+  AMQP_HOST: 'crisalid-bus'
   AMQP_PORT: '5672'
   API_HOST: 'http://192.168.59.101'
   API_PREFIX: '/api'

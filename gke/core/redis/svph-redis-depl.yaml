@@ -41,7 +41,7 @@ spec:
         resources:
           requests:
             cpu: "500m"
-            memory: "5Gi"
+            memory: "1Gi"
         ports:
             - name: redis
               containerPort: 6379

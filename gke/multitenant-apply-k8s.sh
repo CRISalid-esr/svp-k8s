@@ -1,44 +1,52 @@
 #!/bin/bash
-INST=$1
+source ./common_vars.env
+source ./common.sh
 
-if [ -z $INST ]; then
-  echo "Please provide an institution name"
+check_inst_arg
+load_inst_env
+
+SVPH_DOCKER_IMAGE_TAG="v0.16-dev"
+SVPH_DOCKER_IMAGE_NAME="crisalidesr/svp-harvester"
+IKG_DOCKER_IMAGE_TAG="v0.2-dev"
+IKG_DOCKER_IMAGE_NAME="crisalidesr/crisalid-ikg"
+
+REGISTRY="index.docker.io"
+SVPH_REPOSITORY_NAME="crisalidesr/svp-harvester"
+IKG_REPOSITORY_NAME="crisalidesr/crisalid-ikg"
+
+SVPH_TOKEN=$(curl -s "https://auth.docker.io/token?service=registry.docker.io&scope=repository:$SVPH_REPOSITORY_NAME:pull" | jq -r .token)
+IKG_TOKEN=$(curl -s "https://auth.docker.io/token?service=registry.docker.io&scope=repository:$IKG_REPOSITORY_NAME:pull" | jq -r .token)
+
+# Get the image digest using Docker Registry HTTP API v2
+SVPH_MANIFESTS=$(curl -s -H "Authorization: Bearer $SVPH_TOKEN" "https://${REGISTRY}/v2/$SVPH_REPOSITORY_NAME/manifests/$SVPH_DOCKER_IMAGE_TAG")
+SVPH_DOCKER_IMAGE_DIGEST=$(curl -sI -H "Authorization: Bearer $SVPH_TOKEN" "https://${REGISTRY}/v2/$SVPH_REPOSITORY_NAME/manifests/$SVPH_DOCKER_IMAGE_TAG" | awk '/docker-content-digest/ {print $2}' | tr -d '\r')
+IKG_MANIFESTS=$(curl -s -H "Authorization: Bearer $IKG_TOKEN" "https://${REGISTRY}/v2/$IKG_REPOSITORY_NAME/manifests/$IKG_DOCKER_IMAGE_TAG")
+IKG_DOCKER_IMAGE_DIGEST=$(curl -sI -H "Authorization: Bearer $IKG_TOKEN" "https://${REGISTRY}/v2/$IKG_REPOSITORY_NAME/manifests/$IKG_DOCKER_IMAGE_TAG" | awk '/docker-content-digest/ {print $2}' | tr -d '\r')
+
+echo "SVP Harvester docker image name: $SVPH_DOCKER_IMAGE_NAME"
+echo "SVP Harvester docker image tag: $SVPH_DOCKER_IMAGE_TAG"
+echo "SVP Harvester docker image digest: $SVPH_DOCKER_IMAGE_DIGEST"
+
+if [ -z "$SVPH_DOCKER_IMAGE_DIGEST" ]; then
+  echo "Failed to retrieve SVP Harvester docker image digest for $SVPH_DOCKER_IMAGE_NAME"
   exit 1
 fi
 
-PWD=$(pwd)
-CORE_DIRECTORY=$PWD/core
-ACCESS_DIRECTORY=$PWD/access
-INST_DIRECTORY=$PWD/inst/$INST
-RABBIT_DIRECTORY=$CORE_DIRECTORY/rabbitmq
-REDIS_DIRECTORY=$CORE_DIRECTORY/redis
-VOC_PROXIES_DIRECTORY=$CORE_DIRECTORY/voc-proxies
-CLIENT_MOCK_DIRECTORY=$CORE_DIRECTORY/client-mock
+echo "Crisalid IKG docker image name: $IKG_DOCKER_IMAGE_NAME"
+echo "Crisalid IKG docker image tag: $IKG_DOCKER_IMAGE_TAG"
+echo "Crisalid IKG docker image digest: $IKG_DOCKER_IMAGE_DIGEST"
 
-SVPH_DOCKER_IMAGE_TAG="v0.11-dev"
-SVPH_DOCKER_IMAGE_NAME="crisalidesr/svp-harvester"
-
-REGISTRY="index.docker.io"
-REPOSITORY_NAME="crisalidesr/svp-harvester"
-
-TOKEN=$(curl -s "https://auth.docker.io/token?service=registry.docker.io&scope=repository:$REPOSITORY_NAME:pull" | jq -r .token)
-
-# Get the image digest using Docker Registry HTTP API v2
-MANIFESTS=$(curl -s -H "Authorization: Bearer $TOKEN" "https://${REGISTRY}/v2/$REPOSITORY_NAME/manifests/$SVPH_DOCKER_IMAGE_TAG")
-SVPH_DOCKER_IMAGE_DIGEST=$(curl -sI -H "Authorization: Bearer $TOKEN" "https://${REGISTRY}/v2/$REPOSITORY_NAME/manifests/$SVPH_DOCKER_IMAGE_TAG" | awk '/docker-content-digest/ {print $2}' | tr -d '\r')
-
-echo "Docker image name: $SVPH_DOCKER_IMAGE_NAME"
-echo "Docker image tag: $SVPH_DOCKER_IMAGE_TAG"
-echo "Docker image digest: $SVPH_DOCKER_IMAGE_DIGEST"
-
-if [ -z "$SVPH_DOCKER_IMAGE_DIGEST" ]; then
-  echo "Failed to retrieve Docker image digest for $SVPH_DOCKER_IMAGE_NAME"
+if [ -z "$IKG_DOCKER_IMAGE_DIGEST" ]; then
+  echo "Failed to retrieve Crisalid IKG docker image digest for $IKG_DOCKER_IMAGE_NAME"
   exit 1
 fi
 
 export SVPH_DOCKER_IMAGE_NAME
 export SVPH_DOCKER_IMAGE_TAG
 export SVPH_DOCKER_IMAGE_DIGEST
+export IKG_DOCKER_IMAGE_NAME
+export IKG_DOCKER_IMAGE_TAG
+export IKG_DOCKER_IMAGE_DIGEST
 
 folders=(
   "$INST_DIRECTORY"
@@ -49,10 +57,13 @@ folders=(
 )
 
 for folder in "${folders[@]}"; do
-  find "$folder" -name '*.yaml' -o -name '*.yml' | while read file; do
-    # Use envsubst to replace the placeholder with the actual digest
-    # and pipe it to kubectl apply
-    echo "Applying $file"
-    envsubst <"$file" | kubectl apply --namespace="$INST" -f -
+  find "$folder" \( -name '*.yaml' -o -name '*.yml' \) \
+    -not -path '*/dags/*' \
+    -not -name '*-values.yml' \
+    -not -name '*-values.yaml' | while read file; do
+      # Use envsubst to replace the placeholder with the actual digest
+      # and pipe it to kubectl apply
+      echo "Applying $file"
+      envsubst <"$file" | kubectl apply --namespace="$INST" -f -
   done
 done

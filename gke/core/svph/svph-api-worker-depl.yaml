@@ -26,13 +26,13 @@ spec:
             - name: AMQP_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: svp-rabbit-secret
-                  key: amqppassword
+                  name: crisalid-bus-secret
+                  key: amqp_password
             - name: AMQP_USER
               valueFrom:
                 secretKeyRef:
-                  name: svp-rabbit-secret
-                  key: amqpuser
+                  name: crisalid-bus-secret
+                  key: amqp_user
             - name: SCANR_ES_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -97,10 +97,10 @@ spec:
           resources:
             limits:
               cpu: 5000m
-              memory: 10Gi
+              memory: 6Gi
             requests:
               cpu: 2000m
-              memory: 7Gi
+              memory: 4Gi
         - name: cloud-sql-proxy
           image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:latest
           args:

@@ -2,8 +2,8 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: svp-rabbit
-  name: svp-rabbit
+    app: crisalid-bus
+  name: crisalid-bus
 spec:
   ports:
     - name: "amqp-port"
@@ -13,6 +13,6 @@ spec:
       port: 15672
       targetPort: 15672
   selector:
-    app: svp-rabbit
+    app: crisalid-bus
 status:
   loadBalancer: {}

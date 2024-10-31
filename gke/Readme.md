@@ -9,6 +9,36 @@ gcloud config set project my-project-12345
 gcloud container clusters get-credentials my-cluster --region=europe-west9
 ```
 
+# Add a new institution with its own K8S namespace
+
+```bash
+./multitenant-add-inst.sh myinst
+```
+
+# Deploy Neo4j for the new institution
+
+```bash
+ ./multitenant-deploy-neo4j.sh myinst
+```
+
+# Generate secret files for the new institution
+
+```bash
+ ./multitenant-secrets-files.sh myinst
+```
+
+# Generate config files for the new institution
+
+```bash
+ ./multitenant-config-files.sh myinst
+```
+
+# Create cloud composer environment for the institution
+
+```bash
+./multitenant-deploy-cdb.sh myinst
+``` 
+
 # Scale down svp-harvester
 
 No more than one svp-harvester instance should be up at restart time, to avoid dabase model/ code discrepancies.

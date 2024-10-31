@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ikg-config
+  labels:
+    app: ikg
+data:
+  LOGGING_LEVEL: '30'
+  LOGURU_LEVEL: 'WARNING'
+  API_PREFIX: '/api'
+  API_VERSION: 'v1'
+  APP_ENV: '${APP_ENV}'
+  AMQP_ENABLED: 'true'
+  AMQP_HOST: '${AMQP_HOST}'
+  AMQP_PORT: '${AMQP_PORT}'
+  AMQP_TASK_PARALLELISM_LIMIT: '5'
+  AMQP_CONSUMER_ACK_TIMEOUT: '43200000'
+  AMQP_PREFETCH_COUNT: '5'
+  NEO4J_URI: 'bolt://${NEO4J_INSTANCE_NAME}:${NEO4J_PORT}'
+  ES_ENABLED: 'false'
+  ES_HOST: 'http://localhost'
+  ES_PORT: '9200'
+  ES_USER: 'elastic'
+
+
+
+

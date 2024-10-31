@@ -1,33 +1,20 @@
 #!/bin/bash
-INST=$1
-LOCATION=europe-west9
-ZONE=europe-west9-a
+source ./common_vars.env
+source ./common.sh
+
+check_inst_arg
+load_inst_env
+get_project_id
+get_gsa_email
 
 PWD=$(pwd)
 INST_DIRECTORY=$PWD/inst/$INST
-DAGS_DIRECTORY=$INST_DIRECTORY/dags
+
 ENV_FILE=$DAGS_DIRECTORY/env.txt
-INST_ENV_FILE=$PWD/inst_env/$INST.env
-DAGS_BUCKET_NAME="crisalid-$INST-dags"
-COMPOSER_ENV_NAME="composer-env-$INST"
+
 AIRFLOW_VERSION="2.9.3"
 COMPOSER_VERSION="3"
-APP_ENV="dev"
-#GIT_BRANCH="dev-main"
-GIT_BRANCH="39-adapt-to-cloud-composer"
-
-# check if inst env file exists
-if [ ! -f $INST_ENV_FILE ]; then
-  echo "Institution environment file not found"
-  exit 1
-fi
-echo "Institution environment file found: $INST_ENV_FILE"
-source $INST_ENV_FILE
-echo "Institution environment variables loaded"
-
-# fetch project id and service account email
-PROJECT_ID=$(gcloud config get-value project)
-GSA_EMAIL=$(gcloud iam service-accounts list --filter="name:$INST-svph" --format="value(email)")
+GIT_BRANCH="dev-main"
 
 # create bucket for dags if it does not exist
 gsutil ls -p $PROJECT_ID | grep -q gs://$DAGS_BUCKET_NAME
@@ -108,11 +95,17 @@ gcloud composer environments update $COMPOSER_ENV_NAME \
   --location=$LOCATION \
   --update-pypi-packages-from-file=$DAGS_DIRECTORY/cloud-composer-requirements.txt
 
+# spreadsheet identifiers path is in data buckets with DATA_BUCKET_NAME="crisalid-$INST-data"
+PEOPLE_SPREADSHEET_PATH="gs://$DATA_BUCKET_NAME/people.csv"
+STRUCTURE_SPREADSHEET_PATH="gs://$DATA_BUCKET_NAME/structure.csv"
+
 # Replace variables in .env.template file and copy it to env.txt
 cp $DAGS_DIRECTORY/.env.template $ENV_FILE
 for var in LDAP_HOST \
   LDAP_BIND_DN \
   LDAP_BIND_PASSWORD \
+  PEOPLE_SPREADSHEET_PATH \
+  STRUCTURE_SPREADSHEET_PATH \
   RABBITMQ_CONN_ID \
   RABBITMQ_HOST \
   RABBITMQ_PORT \
