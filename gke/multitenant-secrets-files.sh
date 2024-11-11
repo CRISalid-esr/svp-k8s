@@ -29,6 +29,11 @@ for file in "$SECRETS_DIR"/*-secret.yaml; do
     SVPH_DB_NAME \
     SVPH_DB_USER \
     SVPH_DB_PASSWORD \
+    SVP_DB_HOST \
+    SVP_DB_PORT \
+    SVP_DB_NAME \
+    SVP_DB_USER \
+    SVP_DB_PASSWORD \
     SCOPUS_INST_TOKEN \
     SCOPUS_API_KEY \
     NEO4J_USER \

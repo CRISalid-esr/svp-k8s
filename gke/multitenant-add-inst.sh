@@ -88,10 +88,10 @@ else
   echo "Bucket $DATA_BUCKET_NAME already exists"
 fi
 
-# if svph-$INST-db does not exist in $DB_INSTANCE_NAME cloud sql postgres instance, create it
+# if SVPH_DB_NAME does not exist in $DB_INSTANCE_NAME cloud sql postgres instance, create it
 gcloud sql databases list --instance=$DB_INSTANCE_NAME --format="value(name)" | grep -q $SVPH_DB_NAME
 if [ $? -ne 0 ]; then
-  echo "Creating database svph-$INST-db in $DB_INSTANCE_NAME cloud sql postgres instance"
+  echo "Creating database $SVPH_DB_NAME in $DB_INSTANCE_NAME cloud sql postgres instance"
   gcloud sql databases create $SVPH_DB_NAME --instance=$DB_INSTANCE_NAME
 else
   echo "Database $SVPH_DB_NAME already exists in $DB_INSTANCE_NAME cloud sql postgres instance"
@@ -105,11 +105,28 @@ else
   echo "User $SVPH_DB_USER already exists in $DB_INSTANCE_NAME cloud sql postgres instance"
 fi
 
+# if SVP_DB_NAME does not exist in $DB_INSTANCE_NAME cloud sql postgres instance, create it
+gcloud sql databases list --instance=$DB_INSTANCE_NAME --format="value(name)" | grep -q $SVP_DB_NAME
+if [ $? -ne 0 ]; then
+  echo "Creating database $SVP_DB_NAME in $DB_INSTANCE_NAME cloud sql postgres instance"
+  gcloud sql databases create $SVP_DB_NAME --instance=$DB_INSTANCE_NAME
+else
+  echo "Database $SVP_DB_NAME already exists in $DB_INSTANCE_NAME cloud sql postgres instance"
+fi
+# if $SVP_DB_USER user does not exist in "$DB_INSTANCE_NAME"" cloud sql postgres instance, create it
+gcloud sql users list --instance=$DB_INSTANCE_NAME --format="value(name)" | grep -q $SVP_DB_USER
+if [ $? -ne 0 ]; then
+  echo "Creating user $SVP_DB_USER in $DB_INSTANCE_NAME cloud sql postgres instance"
+  gcloud sql users create $SVP_DB_USER --instance=$DB_INSTANCE_NAME --password=$SVP_DB_PASSWORD
+else
+  echo "User $SVP_DB_USER already exists in $DB_INSTANCE_NAME cloud sql postgres instance"
+fi
+
 CONNECTION_NAME=$(gcloud sql instances describe $DB_INSTANCE_NAME --format="value(connectionName)")
 
-# copy deployment files (*-depl.yaml) from core/svph to inst/$INST
-# and replace ${CONNECTION_NAME} with $CONNECTION_NAME
-for file in core/svph/*-depl.yaml; do
+# copy deployment files (*-depl.yaml) from core/svph and core/sovisuplus to inst/$INST
+# and replace ${CONNECTION_NAME} with $CONNECTION_NAME for cloud-sql-proxy container
+for file in core/svph/*-depl.yaml core/sovisuplus/*-depl.yaml; do
   echo "Copying $file to $INST_DIRECTORY"
   cp "$file" "$INST_DIRECTORY"
   for var in CONNECTION_NAME; do
