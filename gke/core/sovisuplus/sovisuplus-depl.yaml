@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: sovisuplus
+  name: sovisuplus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sovisuplus
+  strategy: { }
+  template:
+    metadata:
+      labels:
+        app: sovisuplus
+    spec:
+      serviceAccountName: svph-ksa
+      containers:
+        - name: sovisuplus
+          args:
+            - bash
+            - -c
+            - while ! nc -z 127.0.0.1 5432; do echo "waiting for database" && sleep 1; done; /app/docker-bootstrap-app.sh
+          env:
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: sovisuplus-secret
+                  key: db_password
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: sovisuplus-secret
+                  key: db_user
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: sovisuplus-secret
+                  key: db_name
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: sovisuplus-secret
+                  key: db_host
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: sovisuplus-secret
+                  key: db_port
+            - name: DOCKER_DIGEST
+              value: ${SVP_DOCKER_IMAGE_DIGEST}
+          envFrom:
+            - configMapRef:
+                name: sovisuplus-config
+          image: ${SVP_DOCKER_IMAGE_NAME}:${SVP_DOCKER_IMAGE_TAG}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+          readinessProbe:
+            httpGet:
+              path: /setup
+              port: 3000
+            initialDelaySeconds: 180
+            periodSeconds: 30
+          livenessProbe:
+            httpGet:
+              path: /setup
+              port: 3000
+            initialDelaySeconds: 60
+            periodSeconds: 30
+          resources:
+            limits:
+              cpu: 5000m
+              memory: 10Gi
+              ephemeral-storage: 3Gi
+            requests:
+              cpu: 2000m
+              memory: 5Gi
+              ephemeral-storage: 2Gi
+        - name: cloud-sql-proxy
+          image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:latest
+          args:
+            - "--private-ip"
+            - "--auto-iam-authn"
+            - "--port=5432"
+            - "${CONNECTION_NAME}"
+          resources:
+            limits:
+              cpu: 200m
+              memory: 300Mi
+            requests:
+              cpu: 100m
+              memory: 200Mi
+          securityContext:
+            runAsNonRoot: true
+      restartPolicy: Always

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sovisuplus-config
+  labels:
+    app: sovisuplus
+data:
+  API_HOST: '${SOVISUPLUS_HOST}'
+  APP_ENV: '${APP_ENV}'
+  INSTITUTION_NAME: '${INSTITUTION_NAME}'
+
+
