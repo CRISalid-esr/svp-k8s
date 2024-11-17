@@ -15,7 +15,7 @@ ENV_FILE=$DAGS_DIRECTORY/env.txt
 AIRFLOW_VERSION="2.9.3"
 COMPOSER_VERSION="3"
 GIT_BRANCH="dev-main"
-RESTART_TRIGGER="1"
+RESTART_TRIGGER="3"
 
 # create bucket for dags if it does not exist
 gsutil ls -p $PROJECT_ID | grep -q gs://$DAGS_BUCKET_NAME
@@ -81,6 +81,7 @@ if [ $? -ne 0 ]; then
     --location $LOCATION \
     --image-version=composer-$COMPOSER_VERSION-airflow-$AIRFLOW_VERSION \
     --service-account=$GSA_EMAIL \
+    --network=default \
     --storage-bucket=gs://$DAGS_BUCKET_NAME \
     --tags=cdb
   echo "Composer environment $COMPOSER_ENV_NAME successfully created"
