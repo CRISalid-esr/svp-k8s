@@ -58,6 +58,8 @@ else
   echo "Service account $K8S_SERVICE_ACCOUNT already exists with email $GSA_EMAIL"
 fi
 
+echo "Adding roles to $GSA_EMAIL service account"
+
 gcloud projects add-iam-policy-binding $PROJECT_ID \
   --member="serviceAccount:$GSA_EMAIL" \
   --role="roles/cloudsql.client" \
@@ -76,7 +78,12 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
   --role="roles/monitoring.viewer" \
   --role="roles/monitoring.metricWriter" \
   --role="roles/redis.viewer" \
-  --role="roles/redis.editor"
+  --role="roles/redis.editor" \
+  --role="roles/storage.objectAdmin" \
+  --role="roles/storage.objectCreator" \
+  --role="roles/storage.objectViewer" \
+  --role="roles/storage.admin"
+
 
 gsutil ls -p $PROJECT_ID | grep -q gs://$DATA_BUCKET_NAME
 if [ $? -ne 0 ]; then

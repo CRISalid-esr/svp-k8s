@@ -10,7 +10,14 @@ neo4j:
   #edition: "enterprise"
   edition: "eval"
   #acceptLicenseAgreement: "yes"
-
+  ports:
+    backup:
+      enabled: true
+config:
+  dbms.backup.enabled: "true"
+  dbms.backup.listen_address: "0.0.0.0:6362"
+  server.backup.enabled: "true"
+  server.backup.listen_address: "0.0.0.0:6362"
 volumes:
   data:
     mode: "dynamic"
