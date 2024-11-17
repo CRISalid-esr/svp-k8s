@@ -15,6 +15,7 @@ ENV_FILE=$DAGS_DIRECTORY/env.txt
 AIRFLOW_VERSION="2.9.3"
 COMPOSER_VERSION="3"
 GIT_BRANCH="dev-main"
+RESTART_TRIGGER="3"
 
 # create bucket for dags if it does not exist
 gsutil ls -p $PROJECT_ID | grep -q gs://$DAGS_BUCKET_NAME
@@ -80,6 +81,7 @@ if [ $? -ne 0 ]; then
     --location $LOCATION \
     --image-version=composer-$COMPOSER_VERSION-airflow-$AIRFLOW_VERSION \
     --service-account=$GSA_EMAIL \
+    --network=default \
     --storage-bucket=gs://$DAGS_BUCKET_NAME \
     --tags=cdb
   echo "Composer environment $COMPOSER_ENV_NAME successfully created"
@@ -114,7 +116,8 @@ for var in LDAP_HOST \
   CDB_REDIS_CONN_ID \
   CDB_REDIS_HOST \
   CDB_REDIS_PORT \
-  CDB_REDIS_PASSWORD; do
+  CDB_REDIS_PASSWORD \
+  RESTART_TRIGGER; do
   value=$(eval "echo \$$var")
   echo "Replacing $var with $value"
   sed -i -e "s|\${$var}|$value|g" $ENV_FILE
