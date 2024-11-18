@@ -11,6 +11,8 @@ IKG_DOCKER_IMAGE_TAG="v0.3-dev"
 IKG_DOCKER_IMAGE_NAME="crisalidesr/crisalid-ikg"
 SVP_DOCKER_IMAGE_TAG="v0.3-dev"
 SVP_DOCKER_IMAGE_NAME="crisalidesr/sovisuplus"
+CTD_DOCKER_IMAGE_TAG="v0.4-dev"
+CTD_DOCKER_IMAGE_NAME="crisalidesr/crisalid-training-data"
 
 REGISTRY="index.docker.io"
 SVPH_REPOSITORY_NAME="crisalidesr/svp-harvester"
@@ -40,6 +42,14 @@ fi
 echo "Crisalid IKG docker image name: $IKG_DOCKER_IMAGE_NAME"
 echo "Crisalid IKG docker image tag: $IKG_DOCKER_IMAGE_TAG"
 echo "Crisalid IKG docker image digest: $IKG_DOCKER_IMAGE_DIGEST"
+
+if [ "$ENABLE_TRAINING_DATA_PIPELINE" = "1" ]; then
+  echo "Training Data Pipeline is enabled"
+  echo "Crisalid Training Data docker image name: $CTD_DOCKER_IMAGE_NAME"
+  echo "Crisalid Training Data docker image tag: $CTD_DOCKER_IMAGE_TAG"
+else
+  echo "Training Data Pipeline is disabled"
+fi
 
 if [ -z "$IKG_DOCKER_IMAGE_DIGEST" ]; then
   echo "Failed to retrieve Crisalid IKG docker image digest for $IKG_DOCKER_IMAGE_NAME"
@@ -84,3 +94,24 @@ for folder in "${folders[@]}"; do
       envsubst <"$file" | kubectl apply --namespace="$INST" -f -
   done
 done
+
+if [ "$ENABLE_TRAINING_DATA_PIPELINE" != "1" ]; then
+  echo "Training Data Pipeline is disabled"
+  exit 0
+fi
+
+CTD_ES_CONFIG_TEMPLATE=$HELM_CONFIG_DIRECTORY/ctd-es-values.yaml
+CTD_ES_INST_VALUES_FILE=$INST_DIRECTORY/ctd-es-values.yaml
+
+cp $CTD_ES_CONFIG_TEMPLATE $CTD_ES_INST_VALUES_FILE
+sed -i "s/\${CTD_ES_INSTANCE_NAME}/$CTD_ES_INSTANCE_NAME/g" $CTD_ES_INST_VALUES_FILE
+sed -i "s/\${CTD_ES_PASSWORD}/$CTD_ES_PASSWORD/g" $CTD_ES_INST_VALUES_FILE
+sed -i "s/\${CTD_ES_PORT}/$CTD_ES_PORT/g" $CTD_ES_INST_VALUES_FILE
+helm repo add elastic https://helm.elastic.co
+helm upgrade --install $CTD_ES_INSTANCE_NAME elastic/elasticsearch --namespace $INST -f $CTD_ES_INST_VALUES_FILE
+CTD_DEPL_FILE="$CORE_DIRECTORY/crisalid-training-data/crisalid-training-data-depl.yaml"
+echo "Applying $CTD_DEPL_FILE"
+export CTD_DOCKER_IMAGE_NAME
+export CTD_DOCKER_IMAGE_TAG
+envsubst <"$CTD_DEPL_FILE" | kubectl apply --namespace="$INST" -f -
+
