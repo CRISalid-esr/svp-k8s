@@ -11,7 +11,7 @@ IKG_DOCKER_IMAGE_TAG="v0.3-dev"
 IKG_DOCKER_IMAGE_NAME="crisalidesr/crisalid-ikg"
 SVP_DOCKER_IMAGE_TAG="v0.3-dev"
 SVP_DOCKER_IMAGE_NAME="crisalidesr/sovisuplus"
-CTD_DOCKER_IMAGE_TAG="v0.4-dev"
+CTD_DOCKER_IMAGE_TAG="v0.6-dev"
 CTD_DOCKER_IMAGE_NAME="crisalidesr/crisalid-training-data"
 
 REGISTRY="index.docker.io"
