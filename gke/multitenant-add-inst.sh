@@ -95,7 +95,7 @@ if [ "$ENABLE_TRAINING_DATA_PIPELINE" = "1" ]; then
     echo "Creating bucket $TRAINING_DATA_BUCKET_NAME"
     gsutil mb -p $PROJECT_ID -c regional -l $LOCATION gs://$TRAINING_DATA_BUCKET_NAME
     # allow svph service account to read data from the bucket
-    gsutil iam ch serviceAccount:$GSA_EMAIL:objectViewer gs://$TRAINING_DATA_BUCKET_NAME
+    gsutil iam ch serviceAccount:$GSA_EMAIL:objectCreator gs://$TRAINING_DATA_BUCKET_NAME
   else
     echo "Bucket $TRAINING_DATA_BUCKET_NAME already exists"
   fi

@@ -28,10 +28,7 @@ esMajorVersion: ""
 
 # Allows you to add any config files in /usr/share/elasticsearch/config/
 # such as elasticsearch.yml and log4j2.properties
-esConfig:
-  elasticsearch.yml: |
-    xpack.security.enabled: false
-    xpack.security.http.ssl.enabled: false
+esConfig: { }
 #  elasticsearch.yml: |
 #    key:
 #      nestedkey: value
@@ -47,14 +44,7 @@ esJvmOptions: { }
 # Extra environment variables to append to this nodeGroup
 # This will be appended to the current 'env:' key. You can use any of the kubernetes env
 # syntax here
-extraEnvs:
-  - name: xpack.security.enabled
-    value: "false"
-  - name: xpack.security.http.ssl.enabled
-    value: "false"
-  - name: xpack.security.transport.ssl.enabled
-    value: "false"
-
+extraEnvs: { }
 # Allows you to load environment variables from kubernetes secret or config map
 envFrom: [ ]
 # - secretRef:
@@ -96,11 +86,11 @@ esJavaOpts: "" # example: "-Xmx1g -Xms1g"
 
 resources:
   requests:
-    cpu: "1000m"
-    memory: "2Gi"
+    cpu: "500m"
+    memory: "1Gi"
   limits:
-    cpu: "1000m"
-    memory: "2Gi"
+    cpu: "500m"
+    memory: "1Gi"
 
 initResources: { }
 # limits:
