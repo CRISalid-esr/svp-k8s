@@ -95,6 +95,21 @@ else
   echo "Bucket $DATA_BUCKET_NAME already exists"
 fi
 
+# If ENABLE_TRAINING_DATA_PIPELINE is set to true, create bucket for training data
+if [ "$ENABLE_TRAINING_DATA_PIPELINE" = "1" ]; then
+  gsutil ls -p $PROJECT_ID | grep -q gs://$TRAINING_DATA_BUCKET_NAME
+  if [ $? -ne 0 ]; then
+    echo "Creating bucket $TRAINING_DATA_BUCKET_NAME"
+    gsutil mb -p $PROJECT_ID -c regional -l $LOCATION gs://$TRAINING_DATA_BUCKET_NAME
+    # allow svph service account to read data from the bucket
+    gsutil iam ch serviceAccount:$GSA_EMAIL:objectCreator gs://$TRAINING_DATA_BUCKET_NAME
+  else
+    echo "Bucket $TRAINING_DATA_BUCKET_NAME already exists"
+  fi
+  else
+    echo "Training data pipeline is disabled"
+fi
+
 # if SVPH_DB_NAME does not exist in $DB_INSTANCE_NAME cloud sql postgres instance, create it
 gcloud sql databases list --instance=$DB_INSTANCE_NAME --format="value(name)" | grep -q $SVPH_DB_NAME
 if [ $? -ne 0 ]; then
@@ -152,3 +167,4 @@ for file in core/ikg/*-depl.yaml; do
     sed -i -e "s/\${$var}/$value/g" "$INST_DIRECTORY/$(basename "$file")"
   done
 done
+

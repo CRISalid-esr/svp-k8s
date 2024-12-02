@@ -100,6 +100,7 @@ gcloud composer environments update $COMPOSER_ENV_NAME \
 # spreadsheet identifiers path is in data buckets with DATA_BUCKET_NAME="crisalid-$INST-data"
 PEOPLE_SPREADSHEET_PATH="gs://$DATA_BUCKET_NAME/people.csv"
 STRUCTURE_SPREADSHEET_PATH="gs://$DATA_BUCKET_NAME/structure.csv"
+YAML_EMPLOYEE_TYPE_PATH="gs://$DATA_BUCKET_NAME/employee_types.yml"
 
 # Replace variables in .env.template file and copy it to env.txt
 cp $DAGS_DIRECTORY/.env.template $ENV_FILE
@@ -108,6 +109,7 @@ for var in LDAP_HOST \
   LDAP_BIND_PASSWORD \
   PEOPLE_SPREADSHEET_PATH \
   STRUCTURE_SPREADSHEET_PATH \
+  YAML_EMPLOYEE_TYPE_PATH \
   RABBITMQ_CONN_ID \
   RABBITMQ_HOST \
   RABBITMQ_PORT \

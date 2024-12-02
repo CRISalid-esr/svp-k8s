@@ -13,9 +13,14 @@ neo4j:
   ports:
     backup:
       enabled: true
+env:
+  NEO4J_PLUGINS: '["apoc"]'
+  APOC_EXPORT_FILE_ENABLED: "true"
 config:
   dbms.backup.enabled: "true"
   dbms.backup.listen_address: "0.0.0.0:6362"
+  dbms.security.procedures.unrestricted: "gds.*,apoc.*"
+  dbms.security.procedures.allowlist: "gds.*,apoc.*"
   server.backup.enabled: "true"
   server.backup.listen_address: "0.0.0.0:6362"
 volumes:

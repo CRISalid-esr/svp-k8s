@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: crisalid-training-data-config
+  labels:
+    app: crisalid-training-data
+data:
+  AMQP_HOST: '${AMQP_HOST}'
+  AMQP_PORT: '${AMQP_PORT}'
+  APP_ENV: '${APP_ENV}'
+  AMQP_PREFETCH_COUNT: '1'
+  DATA_DIR: '${TRAINING_DATA_BUCKET_PATH}'
+  ES_HOST: '${CTD_ES_INSTANCE_NAME}-master'
+  ES_PORT: '${CTD_ES_PORT}'
+  ES_SCHEME: 'https'
+
+
