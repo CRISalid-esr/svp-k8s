@@ -10,7 +10,12 @@ neo4j:
   #edition: "enterprise"
   edition: "eval"
   #acceptLicenseAgreement: "yes"
-
+env:
+  NEO4J_PLUGINS: '["apoc"]'
+  APOC_EXPORT_FILE_ENABLED: "true"
+config:
+  dbms.security.procedures.unrestricted: "gds.*,apoc.*"
+  dbms.security.procedures.allowlist: "gds.*,apoc.*"
 volumes:
   data:
     mode: "dynamic"

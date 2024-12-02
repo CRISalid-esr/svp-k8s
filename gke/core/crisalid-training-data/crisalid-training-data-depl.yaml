@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: crisalid-training-data
+  name: crisalid-training-data
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: crisalid-training-data
+  strategy: { }
+  template:
+    metadata:
+      labels:
+        app: crisalid-training-data
+    spec:
+      serviceAccountName: k8s-service-account
+      containers:
+        - name: crisalid-training-data
+          image: ${CTD_DOCKER_IMAGE_NAME}:${CTD_DOCKER_IMAGE_TAG}
+          imagePullPolicy: Always
+          env:
+            - name: AMQP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: crisalid-bus-secret
+                  key: amqp_password
+            - name: AMQP_USER
+              valueFrom:
+                secretKeyRef:
+                  name: crisalid-bus-secret
+                  key: amqp_user
+            - name: ES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: crisalid-training-data-secret
+                  key: es_user
+            - name: ES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: crisalid-training-data-secret
+                  key: es_password
+          envFrom:
+            - configMapRef:
+                name: crisalid-training-data-config
+          ports:
+            - containerPort: 8000
+#          readinessProbe:
+#            httpGet:
+#              path: /health
+#              port: 8000
+#            initialDelaySeconds: 30
+#            periodSeconds: 30
+#          livenessProbe:
+#            httpGet:
+#              path: /health
+#              port: 8000
+#            initialDelaySeconds: 60
+#            periodSeconds: 30
+          resources:
+            limits:
+              cpu: 5000m
+              memory: 6Gi
+            requests:
+              cpu: 2000m
+              memory: 2Gi
+      restartPolicy: Always
