@@ -1,0 +1,22 @@
+#!/bin/bash
+source ./common_vars.env
+source ./common.sh
+
+check_inst_arg
+load_inst_env
+get_project_id
+get_gsa_email
+
+KEYCLOAK_REPOSITORY_NAME="oci://registry-1.docker.io/bitnamicharts/keycloak"
+
+kubectl config set-context --current --namespace=$INST
+
+KEYCLOAK_CONFIG_TEMPLATE=$HELM_CONFIG_DIRECTORY/keycloak-values.yaml
+KEYCLOAK_INST_VALUES_FILE=$INST_DIRECTORY/keycloak-values.yaml
+
+cp $KEYCLOAK_CONFIG_TEMPLATE $KEYCLOAK_INST_VALUES_FILE
+sed -i "s/\${KEYCLOAK_ADMIN_PASSWORD}/$KEYCLOAK_ADMIN_PASSWORD/g" $KEYCLOAK_INST_VALUES_FILE
+sed -i "s/\${KEYCLOAK_DATABASE_USER_PASSWORD}/$KEYCLOAK_DATABASE_USER_PASSWORD/g" $KEYCLOAK_INST_VALUES_FILE
+sed -i "s/\${KEYCLOAK_DATABASE_POSTGRES_PASSWORD}/$KEYCLOAK_DATABASE_POSTGRES_PASSWORD/g" $KEYCLOAK_INST_VALUES_FILE
+
+helm upgrade --install $KEYCLOAK_INSTANCE_NAME $KEYCLOAK_REPOSITORY_NAME --namespace $INST -f $KEYCLOAK_INST_VALUES_FILE
