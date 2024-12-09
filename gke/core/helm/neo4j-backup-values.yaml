@@ -8,7 +8,7 @@ neo4j:
 
 backup:
   bucketName: "${NEO4J_BACKUP_BUCKET_NAME}"
-  databaseAdminServiceName:  "neo4j-backup"
+  databaseAdminServiceName:  "neo4j-${INST}"
   databaseNamespace: "${INST}"
   database: "neo4j,system"
   cloudProvider: "gcp"
