@@ -1,2 +1,4 @@
 *-secret.yaml
+!core/secrets/*-secret.yaml
 inst/*
+gcpcreds.json
