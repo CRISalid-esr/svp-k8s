@@ -5,7 +5,7 @@ metadata:
   labels:
     app: sovisuplus
 data:
-  API_HOST: '${SOVISUPLUS_HOST}'
+  APP_URL: '${SOVISUPLUS_HOST}'
   APP_ENV: '${APP_ENV}'
   INSTITUTION_NAME: '${INSTITUTION_NAME}'
   KEYCLOAK_CLIENT_ID: '${KEYCLOAK_CLIENT_ID}'
