@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: apollo-config
+  labels:
+    app: ikg
+data:
+  NEO4J_URI: 'bolt://${NEO4J_INSTANCE_NAME}:${NEO4J_PORT}'
+  ENABLE_API_KEYS: 'true'
+
+
+
+
+

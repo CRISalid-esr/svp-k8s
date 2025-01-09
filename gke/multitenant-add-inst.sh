@@ -152,7 +152,7 @@ done
 
 # copy deployment files (*-depl.yaml) from core/ikg to inst/$INST
 # and replace ${NEO4J_INSTANCE_NAME} with $NEO4J_INSTANCE_NAME and ${NEO4J_PORT} with $NEO4J_PORT
-for file in core/ikg/*-depl.yaml; do
+for file in core/ikg/*-depl.yaml core/apollo/*-depl.yaml; do
   echo "Copying $file to $INST_DIRECTORY"
   cp "$file" "$INST_DIRECTORY"
   for var in NEO4J_INSTANCE_NAME NEO4J_PORT; do

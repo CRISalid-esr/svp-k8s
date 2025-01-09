@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: apollo
+  name: apollo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: apollo
+  strategy: { }
+  template:
+    metadata:
+      labels:
+        app: apollo
+    spec:
+      serviceAccountName: svph-ksa
+      containers:
+        - name: apollo
+          args:
+            - bash
+            - -c
+            - |
+              while ! nc -z ${NEO4J_INSTANCE_NAME} ${NEO4J_PORT}; do
+                echo "waiting for database"
+                sleep 1
+              done
+              node dist/index.js
+          env:
+            - name: NEO4J_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ikg-neo4j-secret
+                  key: neo4j_password
+            - name: NEO4J_USER
+              valueFrom:
+                secretKeyRef:
+                  name: ikg-neo4j-secret
+                  key: neo4j_user
+            - name: DOCKER_DIGEST
+              value: ${APOLLO_DOCKER_IMAGE_DIGEST}
+          envFrom:
+            - configMapRef:
+                name: apollo-config
+          image: ${APOLLO_DOCKER_IMAGE_NAME}:${APOLLO_DOCKER_IMAGE_TAG}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 4000
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 4000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 4000
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            failureThreshold: 3
+          resources:
+            limits:
+              cpu: 500m
+              memory: 0.5Gi
+              ephemeral-storage: 3Gi
+            requests:
+              cpu: 200m
+              memory: 0.25Gi
+              ephemeral-storage: 2Gi
+      restartPolicy: Always
