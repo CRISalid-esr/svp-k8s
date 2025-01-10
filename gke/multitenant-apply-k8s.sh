@@ -13,7 +13,7 @@ SVP_DOCKER_IMAGE_TAG="v0.8-dev"
 SVP_DOCKER_IMAGE_NAME="crisalidesr/sovisuplus"
 CTD_DOCKER_IMAGE_TAG="v0.12-dev"
 CTD_DOCKER_IMAGE_NAME="crisalidesr/crisalid-training-data"
-APOLLO_DOCKER_IMAGE_TAG="v0.1-dev"
+APOLLO_DOCKER_IMAGE_TAG="v0.2-dev"
 APOLLO_DOCKER_IMAGE_NAME="crisalidesr/crisalid-apollo"
 
 REGISTRY="index.docker.io"
