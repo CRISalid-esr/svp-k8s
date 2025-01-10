@@ -58,6 +58,11 @@ spec:
                 secretKeyRef:
                   name: sovisuplus-secret
                   key: keycloak_client_secret
+            - name: GRAPHQL_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: sovisuplus-secret
+                  key: graphql_api_key
             - name: DOCKER_DIGEST
               value: ${SVP_DOCKER_IMAGE_DIGEST}
           envFrom:
