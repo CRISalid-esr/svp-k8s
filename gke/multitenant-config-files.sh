@@ -32,7 +32,8 @@ for file in "$CONFIG_DIR"/*-config.yaml; do
   KEYCLOAK_ADDR \
   KEYCLOAK_REALM \
   CTD_ES_INSTANCE_NAME \
-  CTD_ES_PORT; do
+  CTD_ES_PORT\
+  SVP_AMQP_QUEUE_NAME; do
     value=$(eval "echo \$$var")
     echo "Replacing $var with $value in $INST_DIRECTORY/$(basename "$file")"
     sed -i -e "s#\${$var}#$value#g" "$INST_DIRECTORY/$(basename "$file")"

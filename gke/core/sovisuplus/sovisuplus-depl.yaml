@@ -50,9 +50,9 @@ spec:
                   key: db_port
             - name: NEXTAUTH_SECRET
               valueFrom:
-                  secretKeyRef:
-                    name: sovisuplus-secret
-                    key: nextauth_secret
+                secretKeyRef:
+                  name: sovisuplus-secret
+                  key: nextauth_secret
             - name: KEYCLOAK_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
@@ -63,6 +63,16 @@ spec:
                 secretKeyRef:
                   name: sovisuplus-secret
                   key: graphql_api_key
+            - name: AMQP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: crisalid-bus-secret
+                  key: amqp_password
+            - name: AMQP_USER
+              valueFrom:
+                secretKeyRef:
+                  name: crisalid-bus-secret
+                  key: amqp_user
             - name: DOCKER_DIGEST
               value: ${SVP_DOCKER_IMAGE_DIGEST}
           envFrom:
