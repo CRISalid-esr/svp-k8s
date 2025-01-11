@@ -14,6 +14,10 @@ data:
   GRAPHQL_ENDPOINT_ENABLED: 'true'
   GRAPHQL_ENDPOINT_URL: 'http://apollo/graphql'
   GRAPHQL_API_KEY_ENABLED: 'true'
+  AMQP_HOST: '${AMQP_HOST}'
+  AMQP_PORT: '${AMQP_PORT}'
+  AMQP_QUEUE_NAME: '${SVP_AMQP_QUEUE_NAME}'
+
 
 
 
