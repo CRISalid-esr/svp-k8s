@@ -9,6 +9,9 @@ kubectl config set-context --current --namespace="$INST"
 
 kubectl scale --replicas=0 statefulset svph-redis
 kubectl scale --replicas=0 deployment svp-jel-proxy
+kubectl scale --replicas=0 deployment sovisuplus
+kubectl scale --replicas=0 deployment apollo
+kubectl scale --replicas=0 deployment crisalid-ikg
 kubectl scale --replicas=0 deployment crisalid-training-data
 kubectl scale --replicas=0 deployment crisalid-bus
 kubectl scale --replicas=0 statefulset ctd-es-cluster-master
