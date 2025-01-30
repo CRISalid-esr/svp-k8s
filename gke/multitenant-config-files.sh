@@ -30,7 +30,6 @@ for file in "$CONFIG_DIR"/*-config.yaml; do
               TRAINING_DATA_BUCKET_PATH \
               CTD_ES_INSTANCE_NAME \
               CTD_ES_PORT \
-              APP_URL \
               KEYCLOAK_CLIENT_ID \
               KEYCLOAK_ADDR \
               KEYCLOAK_REALM; do
