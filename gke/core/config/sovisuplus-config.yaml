@@ -5,8 +5,8 @@ metadata:
   labels:
     app: sovisuplus
 data:
-  APP_URL: '${SOVISUPLUS_HOST}'
   APP_ENV: '${APP_ENV}'
+  APP_URL: '${SOVISUPLUS_HOST}'
   INSTITUTION_NAME: '${INSTITUTION_NAME}'
   KEYCLOAK_CLIENT_ID: '${KEYCLOAK_CLIENT_ID}'
   KEYCLOAK_ADDR: '${KEYCLOAK_ADDR}'
@@ -17,7 +17,6 @@ data:
   AMQP_HOST: '${AMQP_HOST}'
   AMQP_PORT: '${AMQP_PORT}'
   AMQP_QUEUE_NAME: '${SVP_AMQP_QUEUE_NAME}'
-
 
 
 

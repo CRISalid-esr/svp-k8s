@@ -20,20 +20,20 @@ for file in "$CONFIG_DIR"/*-config.yaml; do
   cp "$file" "$INST_DIRECTORY"
 
   for var in SVPH_WEB_HOST \
-  SOVISUPLUS_HOST \
-  INSTITUTION_NAME \
-  AMQP_HOST \
-  AMQP_PORT \
-  APP_ENV \
-  NEO4J_INSTANCE_NAME \
-  NEO4J_PORT \
-  TRAINING_DATA_BUCKET_PATH \
-  KEYCLOAK_CLIENT_ID \
-  KEYCLOAK_ADDR \
-  KEYCLOAK_REALM \
-  CTD_ES_INSTANCE_NAME \
-  CTD_ES_PORT\
-  SVP_AMQP_QUEUE_NAME; do
+              SOVISUPLUS_HOST \
+              INSTITUTION_NAME \
+              AMQP_HOST \
+              AMQP_PORT \
+              APP_ENV \
+              NEO4J_INSTANCE_NAME \
+              NEO4J_PORT \
+              TRAINING_DATA_BUCKET_PATH \
+              CTD_ES_INSTANCE_NAME \
+              CTD_ES_PORT \
+              APP_URL \
+              KEYCLOAK_CLIENT_ID \
+              KEYCLOAK_ADDR \
+              KEYCLOAK_REALM; do
     value=$(eval "echo \$$var")
     echo "Replacing $var with $value in $INST_DIRECTORY/$(basename "$file")"
     sed -i -e "s#\${$var}#$value#g" "$INST_DIRECTORY/$(basename "$file")"
