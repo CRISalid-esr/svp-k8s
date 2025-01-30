@@ -33,8 +33,6 @@ spec:
                 secretKeyRef:
                   name: crisalid-bus-secret
                   key: amqp_user
-            - name: NEO4J_URI
-              value: bolt://${NEO4J_INSTANCE_NAME}:${NEO4J_PORT}
             - name: NEO4J_PASSWORD
               valueFrom:
                 secretKeyRef:

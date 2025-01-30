@@ -7,21 +7,26 @@ load_inst_env
 
 SVPH_DOCKER_IMAGE_TAG="v0.16-dev"
 SVPH_DOCKER_IMAGE_NAME="crisalidesr/svp-harvester"
-IKG_DOCKER_IMAGE_TAG="v0.6-dev"
+IKG_DOCKER_IMAGE_TAG="v0.9-dev"
 IKG_DOCKER_IMAGE_NAME="crisalidesr/crisalid-ikg"
-SVP_DOCKER_IMAGE_TAG="v0.6-dev"
+SVP_DOCKER_IMAGE_TAG="v0.11-dev"
 SVP_DOCKER_IMAGE_NAME="crisalidesr/sovisuplus"
 CTD_DOCKER_IMAGE_TAG="v0.12-dev"
 CTD_DOCKER_IMAGE_NAME="crisalidesr/crisalid-training-data"
+APOLLO_DOCKER_IMAGE_TAG="v0.2-dev"
+APOLLO_DOCKER_IMAGE_NAME="crisalidesr/crisalid-apollo"
 
 REGISTRY="index.docker.io"
 SVPH_REPOSITORY_NAME="crisalidesr/svp-harvester"
 IKG_REPOSITORY_NAME="crisalidesr/crisalid-ikg"
 SVP_REPOSITORY_NAME="crisalidesr/sovisuplus"
+APOLLO_REPOSITORY_NAME="crisalidesr/crisalid-apollo"
 
 SVPH_TOKEN=$(curl -s "https://auth.docker.io/token?service=registry.docker.io&scope=repository:$SVPH_REPOSITORY_NAME:pull" | jq -r .token)
 IKG_TOKEN=$(curl -s "https://auth.docker.io/token?service=registry.docker.io&scope=repository:$IKG_REPOSITORY_NAME:pull" | jq -r .token)
 SVP_TOKEN=$(curl -s "https://auth.docker.io/token?service=registry.docker.io&scope=repository:$SVP_REPOSITORY_NAME:pull" | jq -r .token)
+APOLLO_TOKEN=$(curl -s "https://auth.docker.io/token?service=registry.docker.io&scope=repository:$APOLLO_REPOSITORY_NAME:pull" | jq -r .token)
+
 
 # Get the image digest using Docker Registry HTTP API v2
 SVPH_MANIFESTS=$(curl -s -H "Authorization: Bearer $SVPH_TOKEN" "https://${REGISTRY}/v2/$SVPH_REPOSITORY_NAME/manifests/$SVPH_DOCKER_IMAGE_TAG")
@@ -30,6 +35,8 @@ IKG_MANIFESTS=$(curl -s -H "Authorization: Bearer $IKG_TOKEN" "https://${REGISTR
 IKG_DOCKER_IMAGE_DIGEST=$(curl -sI -H "Authorization: Bearer $IKG_TOKEN" "https://${REGISTRY}/v2/$IKG_REPOSITORY_NAME/manifests/$IKG_DOCKER_IMAGE_TAG" | awk '/docker-content-digest/ {print $2}' | tr -d '\r')
 SVP_MANIFESTS=$(curl -s -H "Authorization: Bearer $SVP_TOKEN" "https://${REGISTRY}/v2/$SVP_REPOSITORY_NAME/manifests/$SVP_DOCKER_IMAGE_TAG")
 SVP_DOCKER_IMAGE_DIGEST=$(curl -sI -H "Authorization: Bearer $SVP_TOKEN" "https://${REGISTRY}/v2/$SVP_REPOSITORY_NAME/manifests/$SVP_DOCKER_IMAGE_TAG" | awk '/docker-content-digest/ {print $2}' | tr -d '\r')
+APOLO_MANIFEST=$(curl -s -H "Authorization: Bearer $APOLLO_TOKEN" "https://${REGISTRY}/v2/$APOLLO_REPOSITORY_NAME/manifests/$APOLLO_DOCKER_IMAGE_TAG")
+APOLLO_DOCKER_IMAGE_DIGEST=$(curl -sI -H "Authorization: Bearer $APOLLO_TOKEN" "https://${REGISTRY}/v2/$APOLLO_REPOSITORY_NAME/manifests/$APOLLO_DOCKER_IMAGE_TAG" | awk '/docker-content-digest/ {print $2}' | tr -d '\r')
 
 echo "SVP Harvester docker image name: $SVPH_DOCKER_IMAGE_NAME"
 echo "SVP Harvester docker image tag: $SVPH_DOCKER_IMAGE_TAG"
@@ -65,6 +72,14 @@ if [ -z "$SVP_DOCKER_IMAGE_DIGEST" ]; then
   exit 1
 fi
 
+echo "Apollo docker image name: $APOLLO_DOCKER_IMAGE_NAME"
+echo "Apollo docker image tag: $APOLLO_DOCKER_IMAGE_TAG"
+echo "Apollo docker image digest: $APOLLO_DOCKER_IMAGE_DIGEST"
+if [ -z "$APOLLO_DOCKER_IMAGE_DIGEST" ]; then
+  echo "Failed to retrieve Apollo docker image digest for $APOLLO_DOCKER_IMAGE_NAME"
+  exit 1
+fi
+
 export SVPH_DOCKER_IMAGE_NAME
 export SVPH_DOCKER_IMAGE_TAG
 export SVPH_DOCKER_IMAGE_DIGEST
@@ -74,6 +89,12 @@ export IKG_DOCKER_IMAGE_DIGEST
 export SVP_DOCKER_IMAGE_NAME
 export SVP_DOCKER_IMAGE_TAG
 export SVP_DOCKER_IMAGE_DIGEST
+export CTD_DOCKER_IMAGE_NAME
+export CTD_DOCKER_IMAGE_TAG
+export CTD_DOCKER_IMAGE_DIGEST
+export APOLLO_DOCKER_IMAGE_NAME
+export APOLLO_DOCKER_IMAGE_TAG
+export APOLLO_DOCKER_IMAGE_DIGEST
 
 folders=(
   "$INST_DIRECTORY"
