@@ -5,7 +5,7 @@ source ./common.sh
 check_inst_arg
 load_inst_env
 
-SVPH_DOCKER_IMAGE_TAG="v0.16-dev"
+SVPH_DOCKER_IMAGE_TAG="v0.17-dev"
 SVPH_DOCKER_IMAGE_NAME="crisalidesr/svp-harvester"
 IKG_DOCKER_IMAGE_TAG="v0.9-dev"
 IKG_DOCKER_IMAGE_NAME="crisalidesr/crisalid-ikg"
