@@ -21,6 +21,7 @@ data:
   ES_HOST: 'http://localhost'
   ES_PORT: '9200'
   ES_USER: 'elastic'
+  ORG_REGISTRY_URL: 'http://crisalid-org-registry:3000'
 
 
 
