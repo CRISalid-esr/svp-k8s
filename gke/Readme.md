@@ -17,6 +17,15 @@ gcloud container clusters get-credentials my-cluster --region=europe-west9
 
 # Deploy Neo4j for the new institution
 
+The first time you deploy neo4j, you may need to add the repo to the helm repo list :
+
+```bash
+helm repo add neo4j https://neo4j.github.io/helm
+helm repo update
+```
+
+Then, you can deploy the new instance of Neo4j with the following command:
+
 ```bash
  ./multitenant-deploy-neo4j.sh myinst
 ```
