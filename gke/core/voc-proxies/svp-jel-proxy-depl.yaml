@@ -33,5 +33,13 @@ spec:
           name: svp-jel-proxy
           ports:
             - containerPort: 3030
-          resources: { }
+          resources:
+            limits:
+              cpu: 300m
+              memory: 0.5Gi
+              ephemeral-storage: 1Gi
+            requests:
+              cpu: 100m
+              memory: 0.25Gi
+              ephemeral-storage: 0.5Gi
       restartPolicy: Always
