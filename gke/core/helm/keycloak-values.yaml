@@ -281,6 +281,11 @@ extraEnvVars:
     value: "false"
   - name: KC_HTTPS_REQUIRED
     value: "none"
+  - name: KC_BOOTSTRAP_ADMIN_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: keycloak-p1ps
+        key: admin-password
 #  - name: KC_PROXY
 #    value: "edge"
 ## @param extraEnvVarsCM Name of existing ConfigMap containing extra env vars
