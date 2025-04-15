@@ -1,6 +1,10 @@
-GKE instructions
+# ☁️ SoVisu+ Deployment on Google Kubernetes Engine (GKE)
 
-# Authenticate with GCP
+This guide provides step-by-step instructions to deploy an institution on GKE using Kubernetes namespaces.
+
+---
+
+## Authenticate with Google Cloud
 
 ```bash
 gcloud auth login
@@ -9,74 +13,121 @@ gcloud config set project my-project-12345
 gcloud container clusters get-credentials my-cluster --region=europe-west9
 ```
 
-# Add a new institution with its own K8S namespace
+---
 
+## Add a New Institution (Namespace)
+
+Each institution is identified by a unique code, used across:
+- Kubernetes namespaces
+- Database names
+- Configuration files
+- Repository prefixes
+
+> Example: use `myinst` as your institution code.
+
+**Preparation**:
+```bash
+cp inst_env/example.env inst_env/myinst.env
+# Edit inst_env/myinst.env with institution-specific values
+```
+
+**Create the institution**:
 ```bash
 ./multitenant-add-inst.sh myinst
 ```
 
-# Deploy Neo4j for the new institution
+---
 
-The first time you deploy neo4j, you may need to add the repo to the helm repo list :
+## Deploy Neo4j
+
+If this is your first Neo4j deployment, add the Helm chart repo:
 
 ```bash
 helm repo add neo4j https://neo4j.github.io/helm
 helm repo update
 ```
 
-Then, you can deploy the new instance of Neo4j with the following command:
-
+Deploy Neo4j for the institution:
 ```bash
- ./multitenant-deploy-neo4j.sh myinst
+./multitenant-deploy-neo4j.sh myinst
 ```
 
-# Generate secret files for the new institution
+---
+
+## Generate Secret Files
+
+Used to store credentials and sensitive data (e.g., passwords, API keys).
 
 ```bash
- ./multitenant-secrets-files.sh myinst
+./multitenant-secrets-files.sh myinst
 ```
 
-# Generate config files for the new institution
+Idempotent – safe to run multiple times.
+
+---
+
+## Generate Config Files
+
+Creates Kubernetes config maps and other files from the `.env` values.
 
 ```bash
- ./multitenant-config-files.sh myinst
+./multitenant-config-files.sh myinst
 ```
 
-# Create cloud composer environment for the institution
+Also idempotent.
+
+---
+
+## Deploy Cloud Composer (Airflow)
+
+Creates a GCP Cloud Composer (managed Airflow) environment for the institution.
 
 ```bash
 ./multitenant-deploy-cdb.sh myinst
-``` 
-
-# Scale down svp-harvester
-
-No more than one svp-harvester instance should be up at restart time, to avoid dabase model/ code discrepancies.
-
-```bash
- kubectl scale --replicas=1 deployment svph-api-web -n my_namespace
- kubectl scale --replicas=0 deployment svph-api-worker -n my_namespace
 ```
 
-# Refresh and reapply k8s configuration
+---
 
-This step is necessary to fetch Github commit id and Docker image hash and write it to K8s config.
+## Scale Down SVP-Harvester if Running
 
-If you need to update SVP-H docker image tag, edit gke/multitenant-apply-k8s.sh.
-
-```bash
-./multitenant-apply-k8s.sh my_namespace
-```
-
-# Restart svp-harvester
+> Only **one** harvester instance should be running at restart to avoid inconsistencies.
 
 ```bash
-kubectl rollout restart deployment svph-api-web -n my_namespace
-kubectl scale --replicas=1 deployment svph-api-worker -n my_namespace
-kubectl rollout restart deployment svph-api-worker -n demo1
+kubectl scale --replicas=1 deployment svph-api-web -n myinst
+kubectl scale --replicas=0 deployment svph-api-worker -n myinst
 ```
 
-# Check the status of the pods
+---
+
+## Refresh & Apply Kubernetes Configuration
+
+This fetches GitHub commit info and Docker image hash to update the K8s config.
+
+> To update the Docker tags, edit `gke/multitenant-apply-k8s.sh`.
 
 ```bash
-watch kubectl get pods -o wide -n my_namespace
+./multitenant-apply-k8s.sh myinst
 ```
+
+---
+
+## Restart SVP-Harvester
+
+```bash
+kubectl rollout restart deployment svph-api-web -n myinst
+kubectl scale --replicas=1 deployment svph-api-worker -n myinst
+kubectl rollout restart deployment svph-api-worker -n myinst
+```
+
+---
+
+## 🩺 Monitor Pod Status
+
+```bash
+watch kubectl get pods -o wide -n myinst
+```
+
+---
+
+🎉 Your institution is now up and running on GKE!
+
