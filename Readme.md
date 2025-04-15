@@ -10,4 +10,3 @@ Choose your target environment to deploy SoVisu+:
 ---
 
 For advanced configuration or troubleshooting, refer to the dedicated guides above.  
-Happy deploying! 🎉
