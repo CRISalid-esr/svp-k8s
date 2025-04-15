@@ -121,7 +121,7 @@ kubectl rollout restart deployment svph-api-worker -n myinst
 
 ---
 
-## 🩺 Monitor Pod Status
+## Monitor Pod Status
 
 ```bash
 watch kubectl get pods -o wide -n myinst
