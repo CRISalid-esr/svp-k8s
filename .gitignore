@@ -1,3 +1,4 @@
 .idea
 gke/inst_env/*.env
 !gke/inst_env/example.env
+!gke/inst_env/definitions-example.json
