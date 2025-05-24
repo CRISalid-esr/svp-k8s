@@ -43,6 +43,8 @@ for file in "$SECRETS_DIR"/*-secret.yaml; do
     NEXTAUTH_SECRET \
     KEYCLOAK_CLIENT_SECRET\
     SVP_GRAPHQL_API_KEY\
+    ORCID_CLIENT_ID \
+    ORCID_CLIENT_SECRET \
     APOLLO_API_KEYS; do
     value=$(eval "echo \$$var")
     encoded_value=$(base64_encode "$value")

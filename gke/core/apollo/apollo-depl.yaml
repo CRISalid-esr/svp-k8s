@@ -15,7 +15,7 @@ spec:
       labels:
         app: apollo
     spec:
-      serviceAccountName: svph-ksa
+      serviceAccountName: k8s-service-account
       containers:
         - name: apollo
           args:
