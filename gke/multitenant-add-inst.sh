@@ -21,11 +21,22 @@ echo "Creating directory $INST_DIRECTORY for instance $INST"
 
 mkdir -p $INST_DIRECTORY
 
+
+
 if [ -f "$CRISALID_BUS_DEFINITIONS_FILE" ]; then
   echo "Generating crisalid-bus ConfigMap from $CRISALID_BUS_DEFINITIONS_FILE"
 
+  AMQP_PASSWORD_HASH=$(./encode_rabbitmq_password.sh "$AMQP_PASSWORD")
+  TMP_DEFINITIONS_FILE="$INST_DIRECTORY/definitions-$INST.json"
+  cp "$CRISALID_BUS_DEFINITIONS_FILE" "$INST_DIRECTORY/definitions-$INST.json"
+  for var in AMQP_USER AMQP_PASSWORD_HASH; do
+    value=$(eval "echo \$$var")
+    sed -i -e "s|\${$var}|$value|g" "$TMP_DEFINITIONS_FILE"
+  done
+  echo "Created crisalid-bus definitions with credentials in $TMP_DEFINITIONS_FILE"
+
   kubectl create configmap crisalid-bus-definitions \
-    --from-file=definitions.json=$CRISALID_BUS_DEFINITIONS_FILE \
+    --from-file=definitions.json="$TMP_DEFINITIONS_FILE" \
     --namespace=$INST \
     --dry-run=client -o yaml > "$CRISALID_BUS_CONFIGMAP_OUTPUT_FILE"
 
