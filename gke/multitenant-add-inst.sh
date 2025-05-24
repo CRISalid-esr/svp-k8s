@@ -21,6 +21,19 @@ echo "Creating directory $INST_DIRECTORY for instance $INST"
 
 mkdir -p $INST_DIRECTORY
 
+if [ -f "$CRISALID_BUS_DEFINITIONS_FILE" ]; then
+  echo "Generating crisalid-bus ConfigMap from $CRISALID_BUS_DEFINITIONS_FILE"
+
+  kubectl create configmap crisalid-bus-definitions \
+    --from-file=definitions.json=$CRISALID_BUS_DEFINITIONS_FILE \
+    --namespace=$INST \
+    --dry-run=client -o yaml > "$CRISALID_BUS_CONFIGMAP_OUTPUT_FILE"
+
+  echo "crisalid-bus ConfigMap written to $CRISALID_BUS_CONFIGMAP_OUTPUT_FILE"
+else
+  echo "crisalid-bus definitions file not found: $CRISALID_BUS_DEFINITIONS_FILE"
+fi
+
 kubectl get namespace $INST >/dev/null 2>&1
 if [ $? -ne 0 ]; then
   echo "Creating namespace $INST"
@@ -60,7 +73,6 @@ fi
 
 gcloud projects add-iam-policy-binding $PROJECT_ID \
   --member="serviceAccount:$GSA_EMAIL" \
-  --role="roles/cloudsql.client" \
   --role="roles/logging.logWriter" \
   --role="roles/composer.admin" \
   --role="roles/composer.worker" \

@@ -104,6 +104,15 @@ folders=(
   "$ACCESS_DIRECTORY"
 )
 
+if [ -f "$CRISALID_BUS_CONFIGMAP_OUTPUT_FILE" ]; then
+  echo "Applying crisalid-bus ConfigMap: $CRISALID_BUS_CONFIGMAP_OUTPUT_FILE"
+  kubectl apply -n "$INST" -f "$CRISALID_BUS_CONFIGMAP_OUTPUT_FILE"
+else
+  echo "crisalid-bus ConfigMap file not found: $CRISALID_BUS_CONFIGMAP_OUTPUT_FILE"
+  exit 1
+fi
+
+
 for folder in "${folders[@]}"; do
   find "$folder" \( -name '*.yaml' -o -name '*.yml' \) \
     -not -path '*/dags/*' \
