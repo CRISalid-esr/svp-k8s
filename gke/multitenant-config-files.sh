@@ -31,6 +31,8 @@ for file in "$CONFIG_DIR"/*-config.yaml; do
               TRAINING_DATA_BUCKET_PATH \
               CTD_ES_INSTANCE_NAME \
               CTD_ES_PORT \
+              ORCID_URL \
+              ORCID_SCOPES \
               KEYCLOAK_CLIENT_ID \
               KEYCLOAK_ADDR \
               KEYCLOAK_REALM; do

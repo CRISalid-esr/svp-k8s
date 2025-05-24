@@ -65,6 +65,7 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
   --role="roles/composer.admin" \
   --role="roles/composer.worker" \
   --role="roles/container.admin" \
+  --role="roles/storage.objects.list" \
   --role="roles/container.clusterAdmin" \
   --role="roles/container.nodeAdmin" \
   --role="roles/cloudsql.admin" \
@@ -76,7 +77,9 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
   --role="roles/monitoring.viewer" \
   --role="roles/monitoring.metricWriter" \
   --role="roles/redis.viewer" \
-  --role="roles/redis.editor"
+  --role="roles/redis.editor" \
+  --role="roles/cloudsql.viewer" \
+  --role="roles/cloudsql.client"
 
 gsutil ls -p $PROJECT_ID | grep -q gs://$DATA_BUCKET_NAME
 if [ $? -ne 0 ]; then

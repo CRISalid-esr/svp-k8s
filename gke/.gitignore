@@ -2,3 +2,4 @@
 !core/secrets/*-secret.yaml
 inst/*
 gcpcreds.json
+buckets
