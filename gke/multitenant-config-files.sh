@@ -22,6 +22,7 @@ for file in "$CONFIG_DIR"/*-config.yaml; do
   for var in SVPH_WEB_HOST \
               SOVISUPLUS_HOST \
               SVP_AMQP_QUEUE_NAME \
+              SVP_AMQP_EXCHANGE_NAME \
               INSTITUTION_NAME \
               AMQP_HOST \
               AMQP_PORT \
