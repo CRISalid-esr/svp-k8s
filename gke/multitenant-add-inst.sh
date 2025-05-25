@@ -82,27 +82,30 @@ else
   echo "Service account $K8S_SERVICE_ACCOUNT already exists with email $GSA_EMAIL"
 fi
 
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-  --member="serviceAccount:$GSA_EMAIL" \
-  --role="roles/logging.logWriter" \
-  --role="roles/composer.admin" \
-  --role="roles/composer.worker" \
-  --role="roles/container.admin" \
-  --role="roles/storage.objects.list" \
-  --role="roles/container.clusterAdmin" \
-  --role="roles/container.nodeAdmin" \
-  --role="roles/cloudsql.admin" \
-  --role="roles/compute.admin" \
-  --role="roles/compute.networkAdmin" \
-  --role="roles/storage.admin" \
-  --role="roles/iam.serviceAccountAdmin" \
-  --role="roles/iam.serviceAccountUser" \
-  --role="roles/monitoring.viewer" \
-  --role="roles/monitoring.metricWriter" \
-  --role="roles/redis.viewer" \
-  --role="roles/redis.editor" \
-  --role="roles/cloudsql.viewer" \
-  --role="roles/cloudsql.client"
+for role in \
+  roles/logging.logWriter \
+  roles/composer.admin \
+  roles/composer.worker \
+  roles/container.admin \
+  roles/storage.objects.list \
+  roles/container.clusterAdmin \
+  roles/container.nodeAdmin \
+  roles/cloudsql.admin \
+  roles/compute.admin \
+  roles/compute.networkAdmin \
+  roles/storage.admin \
+  roles/iam.serviceAccountAdmin \
+  roles/iam.serviceAccountUser \
+  roles/monitoring.viewer \
+  roles/monitoring.metricWriter \
+  roles/redis.viewer \
+  roles/redis.editor \
+  roles/cloudsql.viewer \
+  roles/cloudsql.client; do
+    gcloud projects add-iam-policy-binding "$PROJECT_ID" \
+      --member="serviceAccount:$GSA_EMAIL" \
+      --role="$role"
+done
 
 gsutil ls -p $PROJECT_ID | grep -q gs://$DATA_BUCKET_NAME
 if [ $? -ne 0 ]; then
