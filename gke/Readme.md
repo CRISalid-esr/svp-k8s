@@ -115,8 +115,6 @@ Creates a GCP Cloud Composer (managed Airflow) environment for the institution.
 ./multitenant-deploy-cdb.sh myinst
 ```
 
----
-
 ## Refresh & Apply Kubernetes Configuration
 
 This fetches GitHub commit info and Docker image hash to update the K8s config.
@@ -126,6 +124,30 @@ This fetches GitHub commit info and Docker image hash to update the K8s config.
 ```bash
 ./multitenant-apply-k8s.sh myinst
 ```
+
+---
+
+## Allow Airflow to access crisalid-bus (RabbitMQ)
+
+> **Important**: Airflow needs to access the crisalid-bus (RabbitMQ) service, which is part of the GKE cluster.
+
+To expose the necessary ports, apply extras/crisalid-bus-external-access.yaml after editing the namespace :
+
+```bash
+kubectl apply -f extras/crisalid-bus-external-access.yaml -n myinst
+```
+
+After Airflow has started, it won't be aware of crisalid-bus (RabbitMQ) IP address as it does not belong the the GKE
+cluster.
+Navigate to the Airflow UI and manually add the connection to crisalid-bus (RabbitMQ) with the following parameters:
+
+- **Connection Id**: `crisalid-bus`
+- **Connection Type**: `RabbitMQ`
+- **Host**: `12.34.56.78` (replace with your crisalid-bus LoadBalancer IP from the previous step)
+- **vhost**: `/`
+- **Login**: `your_rabbitmq_login`
+- **Password**: `your_rabbitmq_password`
+- **Port**: `5672`
 
 ---
 
