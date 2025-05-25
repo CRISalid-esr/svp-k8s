@@ -22,6 +22,8 @@ gsutil ls -p $PROJECT_ID | grep -q gs://$DAGS_BUCKET_NAME
 if [ $? -ne 0 ]; then
   echo "Creating bucket $DAGS_BUCKET_NAME with standard storage class in $LOCATION"
   gsutil mb -p $PROJECT_ID -c standard -l $LOCATION gs://$DAGS_BUCKET_NAME
+  # Buckets permissions are fine grained
+  gsutil iam ch serviceAccount:$GSA_EMAIL:roles/storage.admin gs://$DAGS_BUCKET_NAME
 else
   echo "Bucket $DAGS_BUCKET_NAME already exists"
 fi
