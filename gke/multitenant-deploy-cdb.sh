@@ -37,7 +37,7 @@ REDIS_INST_SIZE="1"
 REDIS_INST_REDIS_VERSION="redis_7_0"
 
 # if redis instance does not exist, create it
-gcloud redis instances list --region=$REDIS_INST_ZONE --format="value(name)" | grep -q $REDIS_INST_NAME
+gcloud redis instances list --region=$REDIS_INST_LOCATION --format="value(name)" | grep -q $REDIS_INST_NAME
 if [ $? -ne 0 ]; then
   echo "Creating redis instance $REDIS_INST_NAME"
   gcloud redis instances create $REDIS_INST_NAME \
@@ -101,7 +101,7 @@ gcloud composer environments update $COMPOSER_ENV_NAME \
 
 # spreadsheet identifiers path is in data buckets with DATA_BUCKET_NAME="crisalid-$INST-data"
 PEOPLE_SPREADSHEET_PATH="gs://$DATA_BUCKET_NAME/people.csv"
-STRUCTURE_SPREADSHEET_PATH="gs://$DATA_BUCKET_NAME/structure.csv"
+STRUCTURE_SPREADSHEET_PATH="gs://$DATA_BUCKET_NAME/structures.csv"
 YAML_EMPLOYEE_TYPE_PATH="gs://$DATA_BUCKET_NAME/employee_types.yml"
 
 # Replace variables in .env.template file and copy it to env.txt
