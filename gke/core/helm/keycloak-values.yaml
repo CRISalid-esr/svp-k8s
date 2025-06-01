@@ -284,7 +284,7 @@ extraEnvVars:
   - name: KC_BOOTSTRAP_ADMIN_PASSWORD
     valueFrom:
       secretKeyRef:
-        name: keycloak-p1ps
+        name: keycloak-${INST}
         key: admin-password
 #  - name: KC_PROXY
 #    value: "edge"
