@@ -2,37 +2,32 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: ikg
-  name: ikg
+    app: apollo
+  name: apollo
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ikg
+      app: apollo
   strategy: { }
   template:
     metadata:
       labels:
-        app: ikg
+        app: apollo
     spec:
       serviceAccountName: k8s-service-account
       containers:
-        - name: ikg
+        - name: apollo
           args:
             - bash
             - -c
-            - while ! nc -z ${NEO4J_INSTANCE_NAME} ${NEO4J_PORT}; do echo "waiting for database" && sleep 1; done; uvicorn app.main:app --host 0.0.0.0 --port 8000
+            - |
+              while ! nc -z ${NEO4J_INSTANCE_NAME} ${NEO4J_PORT}; do
+                echo "waiting for database"
+                sleep 1
+              done
+              node dist/src/index.js
           env:
-            - name: AMQP_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: crisalid-bus-secret
-                  key: amqp_password
-            - name: AMQP_USER
-              valueFrom:
-                secretKeyRef:
-                  name: crisalid-bus-secret
-                  key: amqp_user
             - name: NEO4J_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -43,34 +38,41 @@ spec:
                 secretKeyRef:
                   name: ikg-neo4j-secret
                   key: neo4j_user
+            - name: API_KEYS
+              valueFrom:
+                secretKeyRef:
+                  name: apollo-secret
+                  key: api_keys
             - name: DOCKER_DIGEST
-              value: ${IKG_DOCKER_IMAGE_DIGEST}
+              value: ${APOLLO_DOCKER_IMAGE_DIGEST}
           envFrom:
             - configMapRef:
-                name: ikg-config
-          image: ${IKG_DOCKER_IMAGE_NAME}:${IKG_DOCKER_IMAGE_TAG}
+                name: apollo-config
+          image: ${APOLLO_DOCKER_IMAGE_NAME}:${APOLLO_DOCKER_IMAGE_TAG}
           imagePullPolicy: Always
           ports:
-            - containerPort: 8000
+            - containerPort: 4000
           readinessProbe:
             httpGet:
               path: /health
-              port: 8000
+              port: 4000
             initialDelaySeconds: 30
-            periodSeconds: 30
-            timeoutSeconds: 3
+            periodSeconds: 10
+            failureThreshold: 3
           livenessProbe:
             httpGet:
               path: /health
-              port: 8000
+              port: 4000
             initialDelaySeconds: 60
-            periodSeconds: 30
-            timeoutSeconds: 3
+            periodSeconds: 20
+            failureThreshold: 3
           resources:
             limits:
-              cpu: 10000m
-              memory: 3Gi
+              cpu: 500m
+              memory: 0.5Gi
+              ephemeral-storage: 3Gi
             requests:
-              cpu: 5000m
-              memory: 1Gi
+              cpu: 200m
+              memory: 0.25Gi
+              ephemeral-storage: 2Gi
       restartPolicy: Always

@@ -15,7 +15,7 @@ spec:
       labels:
         app: sovisuplus
     spec:
-      serviceAccountName: svph-ksa
+      serviceAccountName: k8s-service-account
       containers:
         - name: sovisuplus
           args:
@@ -48,6 +48,41 @@ spec:
                 secretKeyRef:
                   name: sovisuplus-secret
                   key: db_port
+            - name: NEXTAUTH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: sovisuplus-secret
+                  key: nextauth_secret
+            - name: KEYCLOAK_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: sovisuplus-secret
+                  key: keycloak_client_secret
+            - name: GRAPHQL_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: sovisuplus-secret
+                  key: graphql_api_key
+            - name: ORCID_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: sovisuplus-secret
+                  key: orcid_client_id
+            - name: ORCID_CLIENT_SECRET
+              valueFrom:
+                  secretKeyRef:
+                    name: sovisuplus-secret
+                    key: orcid_client_secret
+            - name: AMQP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: crisalid-bus-secret
+                  key: amqp_password
+            - name: AMQP_USER
+              valueFrom:
+                secretKeyRef:
+                  name: crisalid-bus-secret
+                  key: amqp_user
             - name: DOCKER_DIGEST
               value: ${SVP_DOCKER_IMAGE_DIGEST}
           envFrom:
@@ -71,12 +106,12 @@ spec:
             periodSeconds: 30
           resources:
             limits:
-              cpu: 5000m
-              memory: 10Gi
+              cpu: 500m
+              memory: 0.5Gi
               ephemeral-storage: 3Gi
             requests:
-              cpu: 2000m
-              memory: 5Gi
+              cpu: 200m
+              memory: 0.25Gi
               ephemeral-storage: 2Gi
         - name: cloud-sql-proxy
           image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:latest

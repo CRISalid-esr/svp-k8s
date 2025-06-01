@@ -15,7 +15,7 @@ spec:
       labels:
         app: svph-api-worker
     spec:
-      serviceAccountName: svph-ksa
+      serviceAccountName: k8s-service-account
       containers:
         - name: svph-api-worker
           args:
@@ -96,11 +96,11 @@ spec:
             periodSeconds: 30
           resources:
             limits:
-              cpu: 5000m
-              memory: 6Gi
+              cpu: 8000m
+              memory: 10Gi
             requests:
-              cpu: 2000m
-              memory: 4Gi
+              cpu: 4000m
+              memory: 6Gi
         - name: cloud-sql-proxy
           image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:latest
           args:

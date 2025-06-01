@@ -1,2 +1,9 @@
 *-secret.yaml
+!core/secrets/*-secret.yaml
 inst/*
+inst_env/*.env
+inst_env/*.json
+!inst_env/example.env
+!inst_env/definitions-example.json
+gcpcreds.json
+buckets

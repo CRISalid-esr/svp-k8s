@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: crisalid-org-registry
+  name: crisalid-org-registry
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: crisalid-org-registry
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: crisalid-org-registry
+    spec:
+      containers:
+        - image: crisalidesr/crisalid-org-registry:v0.1
+          livenessProbe:
+            httpGet:
+              port: 3000
+              path: /
+            initialDelaySeconds: 180
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              port: 3000
+              path: /
+            initialDelaySeconds: 180
+            periodSeconds: 10
+          resources:
+            limits:
+              cpu: 500m
+              memory: 2Gi
+              ephemeral-storage: 3Gi
+            requests:
+              cpu: 200m
+              memory: 1Gi
+              ephemeral-storage: 2Gi
+          name: crisalid-org-registry
+          ports:
+            - containerPort: 3000
+      restartPolicy: Always

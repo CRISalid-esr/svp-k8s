@@ -39,7 +39,13 @@ for file in "$SECRETS_DIR"/*-secret.yaml; do
     NEO4J_USER \
     NEO4J_PASSWORD\
     CTD_ES_USER \
-    CTD_ES_PASSWORD ; do
+    CTD_ES_PASSWORD \
+    NEXTAUTH_SECRET \
+    KEYCLOAK_CLIENT_SECRET\
+    SVP_GRAPHQL_API_KEY\
+    ORCID_CLIENT_ID \
+    ORCID_CLIENT_SECRET \
+    APOLLO_API_KEYS; do
     value=$(eval "echo \$$var")
     encoded_value=$(base64_encode "$value")
     sed -i -e "s/\${$var}/$encoded_value/g" "$INST_DIRECTORY/$(basename "$file")"

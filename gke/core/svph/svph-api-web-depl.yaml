@@ -15,7 +15,7 @@ spec:
       labels:
         app: svph-api-web
     spec:
-      serviceAccountName: svph-ksa
+      serviceAccountName: k8s-service-account
       containers:
         - name: svph-api-web
           args:
