@@ -66,18 +66,84 @@ Deploy Neo4j for the institution:
 If you want to access to neo4j from the web :
 
 ```bash
-kubectl patch service neo4j-nu \
-  -n nu \
+kubectl patch service neo4j-{myinst} \
+  -n myinst \
   -p '{"spec": {"type": "LoadBalancer"}}'
  ```
 
 Then get the external IP:
 
 ```bash
-kubectl get service neo4j-nu -n nu
+kubectl get service neo4j-{myinst} -n myinst
 ```
 
----
+### Get a neo4j backup
+
+#### With enterprise edition (live backup enabled)
+
+Deploy the Neo4j backup Helm chart:
+
+```bash
+ ./multitenant-deploy-neo4j-backup.sh nu
+```
+
+If you want to run a job to backup the Neo4j database, you can use the following command:
+
+```bash
+kubectl create job --from=cronjob/neo4j-backup-nu neo4j-backup-test -n myinst
+```
+
+#### With community edition (live backup not enabled)
+
+As live backup is not available in the community edition, you need to scale down the Neo4j deployment to 1 replica
+to ensure data consistency before taking a backup.
+
+```bash
+kubectl scale deployment ikg --replicas=0 -n myinst
+```
+
+Then download the data from the Neo4j pod:
+
+```bash
+kubectl cp nu/neo4j-nu-0:/data ./neo4j-backup-nu-data
+```
+
+Scale back up ikg deployment:
+
+```bash
+kubectl scale deployment ikg --replicas=1 -n myinst
+```
+
+Create a myinst-neo4j directory and move the neo4j-backup-nu-data directory content into its data subdirectory:
+
+```bash
+mkdir myinst-neo4j
+mv neo4j-backup-nu-data/* myinst-neo4j/data/
+```
+
+Ensure 7474 will be the owner of the myinst-neo4j directory, with write permissions:
+
+```bash
+sudo chown -R 7474:7474 myinst-neo4j
+sudo chmod -R 755 myinst-neo4j
+```
+
+Check the neo4j version you are deploying through the Helm chart:
+
+```bash
+helm list -n myinst
+```
+
+Start a new Neo4j pod with the backup data, ensuring the version matches the one you backed up (here 5.26) :
+
+```bash
+docker run --publish=7474:7474 --publish=7687:7687 \
+          --env=NEO4J_AUTH=none -e NEO4J_apoc_export_file_enabled=true \
+          -e NEO4J_server_memory_heap_initial__size=4G -e NEO4J_server_memory_heap_max__size=8G \
+          -e NEO4J_server_memory_pagecache_size=6G -e NEO4J_apoc_import_file_enabled=true \
+          -e NEO4J_apoc_import_file_use__neo4j__config=true -e NEO4JLABS_PLUGINS=\[\"apoc\"\] \
+          -v ./myinst-neo4j/data:/data -v ./myinst-neo4j/logs:/logs -v ./myinst-neo4j/import:/import -v ./myinst-neo4j/backups:/backups -v ./myinst-neo4j/plugins:/plugins   neo4j:5.26-community
+```
 
 ## Generate Secret Files
 

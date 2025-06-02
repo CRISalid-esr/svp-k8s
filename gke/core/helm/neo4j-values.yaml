@@ -13,7 +13,15 @@ neo4j:
 env:
   NEO4J_PLUGINS: '["apoc"]'
   APOC_EXPORT_FILE_ENABLED: "true"
+podSpec:
+  serviceAccountName: k8s-service-account
 config:
+  # syntax evolved in recent versions of Neo4j Helm chart, hence the
+  # redundant `dbms.backup.*` and `server.backup.*`
+  dbms.backup.enabled: "true"
+  dbms.backup.listen_address: "0.0.0.0:6362"
+  server.backup.enabled: "true"
+  server.backup.listen_address: "0.0.0.0:6362"
   dbms.security.procedures.unrestricted: "gds.*,apoc.*"
   dbms.security.procedures.allowlist: "gds.*,apoc.*"
 volumes:
