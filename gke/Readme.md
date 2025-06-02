@@ -117,7 +117,7 @@ kubectl scale deployment ikg --replicas=1 -n myinst
 Create a myinst-neo4j directory and move the neo4j-backup-nu-data directory content into its data subdirectory:
 
 ```bash
-mkdir myinst-neo4j
+mkdir -p myinst-neo4j/data
 mv neo4j-backup-nu-data/* myinst-neo4j/data/
 ```
 
