@@ -7,3 +7,4 @@ inst_env/*.json
 !inst_env/definitions-example.json
 gcpcreds.json
 buckets
+neo4j-backup-*
