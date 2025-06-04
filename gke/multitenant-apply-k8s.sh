@@ -7,9 +7,9 @@ load_inst_env
 
 SVPH_DOCKER_IMAGE_TAG="v0.20-dev"
 SVPH_DOCKER_IMAGE_NAME="crisalidesr/svp-harvester"
-IKG_DOCKER_IMAGE_TAG="v0.17-dev"
+IKG_DOCKER_IMAGE_TAG="v0.18-dev"
 IKG_DOCKER_IMAGE_NAME="crisalidesr/crisalid-ikg"
-SVP_DOCKER_IMAGE_TAG="v0.33-dev"
+SVP_DOCKER_IMAGE_TAG="v0.35-dev"
 SVP_DOCKER_IMAGE_NAME="crisalidesr/sovisuplus"
 CTD_DOCKER_IMAGE_TAG="v0.13-dev"
 CTD_DOCKER_IMAGE_NAME="crisalidesr/crisalid-training-data"
