@@ -22,6 +22,7 @@ data:
   ES_PORT: '9200'
   ES_USER: 'elastic'
   ORG_REGISTRY_URL: 'http://crisalid-org-registry:3000'
+  EVENT_TYPES_TO_PROCESS: '${IKG_EVENT_TYPES_TO_PROCESS}'
 
 
 
