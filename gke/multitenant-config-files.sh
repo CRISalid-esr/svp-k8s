@@ -28,6 +28,7 @@ for file in "$CONFIG_DIR"/*-config.yaml; do
               AMQP_PORT \
               APP_ENV \
               NEO4J_INSTANCE_NAME \
+              IKG_EVENT_TYPES_TO_PROCESS \
               NEO4J_PORT \
               TRAINING_DATA_BUCKET_PATH \
               CTD_ES_INSTANCE_NAME \
