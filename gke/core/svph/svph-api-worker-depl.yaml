@@ -96,11 +96,11 @@ spec:
             periodSeconds: 30
           resources:
             limits:
-              cpu: 8000m
-              memory: 10Gi
+              cpu: 2000m
+              memory: 2Gi
             requests:
-              cpu: 4000m
-              memory: 6Gi
+              cpu: 1000m
+              memory: 1Gi
         - name: cloud-sql-proxy
           image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:latest
           args:
