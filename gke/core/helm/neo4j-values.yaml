@@ -2,7 +2,7 @@ neo4j:
   name: "${NEO4J_INSTANCE_NAME}"
   resources:
     cpu: "8"
-    memory: "8Gi"
+    memory: "16Gi"
 
   password: "${NEO4J_PASSWORD}"
 
