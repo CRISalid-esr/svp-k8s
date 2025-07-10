@@ -5,11 +5,11 @@ source ./common.sh
 check_inst_arg
 load_inst_env
 
-SVPH_DOCKER_IMAGE_TAG="v0.24-dev"
+SVPH_DOCKER_IMAGE_TAG="v0.25-dev"
 SVPH_DOCKER_IMAGE_NAME="crisalidesr/svp-harvester"
-IKG_DOCKER_IMAGE_TAG="v0.21-dev"
+IKG_DOCKER_IMAGE_TAG="v0.23-dev"
 IKG_DOCKER_IMAGE_NAME="crisalidesr/crisalid-ikg"
-SVP_DOCKER_IMAGE_TAG="v0.38-dev"
+SVP_DOCKER_IMAGE_TAG="v0.39-dev"
 SVP_DOCKER_IMAGE_NAME="crisalidesr/sovisuplus"
 CTD_DOCKER_IMAGE_TAG="v0.13-dev"
 CTD_DOCKER_IMAGE_NAME="crisalidesr/crisalid-training-data"
