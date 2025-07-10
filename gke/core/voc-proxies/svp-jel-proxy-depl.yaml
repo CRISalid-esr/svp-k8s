@@ -17,7 +17,7 @@ spec:
         app: svp-jel-proxy
     spec:
       containers:
-        - image: crisalidesr/svp-jel-proxy:latest
+        - image: crisalidesr/svp-jel-proxy:1.1
           livenessProbe:
             httpGet:
               port: 3030
